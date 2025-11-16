@@ -1,6 +1,7 @@
-﻿using RestLess.Authentication;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using RestLess.Authentication;
 using RestLess.DataAdapters;
-using System.Linq;
 
 namespace RestLess.OData
 {
@@ -25,6 +26,17 @@ namespace RestLess.OData
         /// <typeparam name="TClass">Type to fetch</typeparam>
         /// <param name="builder">Url builder</param>
         /// <returns></returns>
+        public async Task<TClass[]> GetEntriesAsync<TClass>(ODataUrlBuilder<TClass> builder)
+        {
+            return await GetAsync<TClass[]>(builder.ToString());
+        }
+
+        /// <summary>
+        /// GetEntries sync
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public TClass[] GetEntries<TClass>(ODataUrlBuilder<TClass> builder)
         {
             return Get<TClass[]>(builder.ToString());
@@ -37,6 +49,17 @@ namespace RestLess.OData
         /// <typeparam name="TClass">Type to fetch</typeparam>
         /// <param name="builder">Url builder</param>
         /// <returns></returns>
+        public async Task<TClass> GetEntryAsync<TClass>(ODataUrlBuilder<TClass> builder)
+        {
+            return (await GetEntriesAsync(builder)).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// GetEntry sync
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public TClass GetEntry<TClass>(ODataUrlBuilder<TClass> builder)
         {
             return GetEntries(builder).FirstOrDefault();
@@ -48,13 +71,35 @@ namespace RestLess.OData
         /// <typeparam name="TClass"></typeparam>
         /// <param name="builder"></param>
         /// <param name="entries"></param>
-        public void PostEntries<TClass>(ODataUrlBuilder<TClass>  builder, TClass[] entries)
+        public async Task PostEntriesAsync<TClass>(ODataUrlBuilder<TClass> builder, TClass[] entries)
+        {
+            await PostAsync(builder.ToString(), entries);
+        }
+
+        /// <summary>
+        /// PostEntries sync
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="entries"></param>
+        public void PostEntries<TClass>(ODataUrlBuilder<TClass> builder, TClass[] entries)
         {
             Post(builder.ToString(), entries);
         }
 
         /// <summary>
         /// Create a  single entry (untested)
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="entry"></param>
+        public async Task PostEntryAsync<TClass>(ODataUrlBuilder<TClass> builder, TClass entry)
+        {
+            await PostEntriesAsync(builder, new[] { entry });
+        }
+
+        /// <summary>
+        /// PostEntry sync
         /// </summary>
         /// <typeparam name="TClass"></typeparam>
         /// <param name="builder"></param>
@@ -66,6 +111,16 @@ namespace RestLess.OData
 
         /// <summary>
         /// Create entries (untested)
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <param name="builder"></param>
+        public async Task DeleteEntriesAsync<TClass>(ODataUrlBuilder<TClass> builder)
+        {
+            await DeleteAsync(builder.ToString());
+        }
+
+        /// <summary>
+        /// DeleteEntries sync
         /// </summary>
         /// <typeparam name="TClass"></typeparam>
         /// <param name="builder"></param>
