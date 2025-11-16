@@ -5,17 +5,13 @@ namespace RestLesser
     /// <summary>
     /// Class to work with relative urls
     /// </summary>
-    public class RelativeUri : Uri
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="relativeUri"></param>
+    public class RelativeUri(string relativeUri) : Uri(Dummy, relativeUri)
     {
-        private readonly static Uri Dummy = new Uri("http://dummy");
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="relativeUri"></param>
-        public RelativeUri(string relativeUri) : base(Dummy, relativeUri)
-        {
-        }
+        private readonly static Uri Dummy = new("http://dummy");
 
         /// <summary>
         /// Return path

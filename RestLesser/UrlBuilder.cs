@@ -75,14 +75,11 @@ namespace RestLesser
     /// <summary>
     /// Url builder
     /// </summary>
-    public class UrlBuilder : UrlBuilder<UrlBuilder, QueryBuilder>
+    /// <remarks>
+    /// Constructor
+    /// </remarks>
+    /// <param name="path"></param>
+    public class UrlBuilder(string path) : UrlBuilder<UrlBuilder, QueryBuilder>(path, new QueryBuilder(path))
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="path"></param>
-        public UrlBuilder(string path) : base(path, new QueryBuilder(path))
-        {
-        }
     }
 }
