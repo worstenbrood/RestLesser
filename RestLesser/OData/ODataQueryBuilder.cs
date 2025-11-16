@@ -43,17 +43,13 @@ namespace RestLesser.OData
     /// <summary>
     /// QueryBuilder with specific logic for OData
     /// </summary>
-    public class ODataQueryBuilder<TClass> : QueryBuilder
+    /// <remarks>
+    /// Constructor
+    /// </remarks>
+    /// <param name="query"></param>
+    public class ODataQueryBuilder<TClass>(string query) : QueryBuilder(query)
     {
         private readonly Operation _operation = [];
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="query"></param>
-        public ODataQueryBuilder(string query) : base(query)
-        { 
-        }
 
         /// <summary>
         /// Set multiple expressions

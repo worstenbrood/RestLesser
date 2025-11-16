@@ -131,6 +131,6 @@ namespace RestLesser.OData
         /// <typeparam name="TClass"></typeparam>
         /// <param name="url"></param>
         /// <returns></returns>
-        public ODataUrlBuilder<TClass> Query<TClass>(string url) => new ODataUrlBuilder<TClass>(this, url);
+        public ODataUrlBuilder<TClass> Query<TClass>(string url) => new ODataQuery<TClass>(this, url);
     }
 }
