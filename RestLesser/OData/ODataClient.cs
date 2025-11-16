@@ -129,8 +129,8 @@ namespace RestLesser.OData
         /// Create a <see cref="ODataUrlBuilder{TClass}"/> using this client
         /// </summary>
         /// <typeparam name="TClass"></typeparam>
-        /// <param name="url"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
-        public ODataUrlBuilder<TClass> Query<TClass>(string url) => new ODataQuery<TClass>(this, url);
+        public ODataUrlBuilder<TClass> Query<TClass>(string path) => new ODataQuery<TClass>(this, path);
     }
 }

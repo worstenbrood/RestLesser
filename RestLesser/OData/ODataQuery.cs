@@ -8,8 +8,8 @@ namespace RestLesser.OData
     /// </summary>
     /// <typeparam name="TClass"></typeparam>
     /// <param name="client"></param>
-    /// <param name="query"></param>
-    public class ODataQuery<TClass>(ODataClient client, string query) : ODataUrlBuilder<TClass>(query)
+    /// <param name="path"></param>
+    public class ODataQuery<TClass>(ODataClient client, string path) : ODataUrlBuilder<TClass>(path)
     {
         private TClass[] _entries;
 
