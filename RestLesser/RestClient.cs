@@ -351,6 +351,43 @@ namespace RestLesser
         }
 
         /// <summary>
+        /// Post file
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="input">Input stream</param>
+        /// <returns></returns>
+        public async Task PostFileAsync(string url, Stream input)
+        {
+            using (var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication))
+            {
+                using (var multipart = new MultipartFormDataContent())
+                {
+                    using (var content = new StreamContent(input))
+                    {
+                        multipart.Add(content);
+                        message.Content = multipart;
+
+                        using (HttpResponseMessage result = await Client.SendAsync(message))
+                        {
+                            await HandleResponse(result);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// PostFile sync
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public void PostFile(string url, Stream input)
+        {
+            PostFileAsync(url, input).SyncResult();
+        }
+
+        /// <summary>
         /// Post a file as multipart form data without returning an object
         /// </summary>
         /// <param name="url">Url</param>
@@ -359,24 +396,9 @@ namespace RestLesser
         /// <exception cref="HttpRequestException"></exception>
         public async Task PostFileAsync(string url, string path)
         {
-            using (var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication))
+            using (var file = File.OpenRead(path))
             {
-                using (var multipart = new MultipartFormDataContent())
-                {
-                    using (var stream = File.OpenRead(path))
-                    {
-                        using (var content = new StreamContent(stream))
-                        {
-                            multipart.Add(content);
-                            message.Content = multipart;
-
-                            using (HttpResponseMessage result = await Client.SendAsync(message))
-                            {
-                                await HandleResponse(result);
-                            }
-                        }
-                    }
-                }
+                await PostFileAsync(url, file);
             }
         }
 
@@ -395,10 +417,10 @@ namespace RestLesser
         /// </summary>
         /// <typeparam name="TRes">Type of the object that will be deserialized from the response</typeparam>
         /// <param name="url">Url</param>
-        /// <param name="path">Full path to file</param>
+        /// <param name="input">Input stream</param>
         /// <returns></returns>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task<TRes> PostFileAsync<TRes>(string url, string path)
+        public async Task<TRes> PostFileAsync<TRes>(string url, Stream input)
         {
             using (var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication))
             {
@@ -406,21 +428,32 @@ namespace RestLesser
 
                 using (var multipart = new MultipartFormDataContent())
                 {
-                    using (var stream = File.OpenRead(path))
-                    {
-                        using (var content = new StreamContent(stream))
-                        {
-                            multipart.Add(content);
-                            message.Content = multipart;
+                    var content = new StreamContent(input);
+                    multipart.Add(content);
+                    message.Content = multipart;
 
-                            using (HttpResponseMessage result = await Client.SendAsync(message))
-                            {
-                               return DataAdapter.Deserialize<TRes>(await HandleResponse(result)); 
-                            }
-                        }
+                    using (HttpResponseMessage result = await Client.SendAsync(message))
+                    {
+                        return DataAdapter.Deserialize<TRes>(await HandleResponse(result)); 
                     }
                 }
             }                   
+        }
+
+        /// <summary>
+        /// Post a file as multipart form data with returning an object
+        /// </summary>
+        /// <typeparam name="TRes">Type of the object that will be deserialized from the response</typeparam>
+        /// <param name="url">Url</param>
+        /// <param name="path">Full path to input file</param>
+        /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
+        public async Task<TRes> PostFileAsync<TRes>(string url, string path)
+        {
+            using (var file = File.OpenRead(path))
+            {
+                return await PostFileAsync<TRes>(url, file);
+            }
         }
 
         /// <summary>
