@@ -17,12 +17,10 @@
 		<VersionPrefix>1.0.1</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<AssemblyTitle>RestLesser</AssemblyTitle>
-		<LangVersion>8.0</LangVersion>
-
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Authors>worstenbrood</Authors>
 		<Copyright>worstenbrood@gmail.com © 2025</Copyright>
 		<Description>RestLesser is a simple rest/odata client.</Description>
-
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -35,5 +33,8 @@
 	<ItemGroup>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
-	
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 </Project>
