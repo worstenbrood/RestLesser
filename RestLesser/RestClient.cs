@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+using RestLesser.Http;
 using RestLesser.Authentication;
 using RestLesser.DataAdapters;
 
@@ -115,22 +115,6 @@ namespace RestLesser
             return body;
         }
         
-        private class RestContent<T> : StringContent
-        {
-            public RestContent(T content, IDataAdapter adapter) : base(adapter.Serialize(content), Encoding.UTF8)
-            {
-                Headers.ContentType = adapter.MediaTypeHeader;
-            }
-        }
-
-        private class AuthenticationRequestMessage : HttpRequestMessage
-        {
-            public AuthenticationRequestMessage(HttpMethod method, string url, IAuthentication authentication = null) : base(method, url)
-            {
-                authentication?.SetAuthentication(this);
-            }
-        }
-
         /// <summary>
         /// Send async
         /// </summary>
@@ -139,15 +123,11 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task SendAsync(string url, HttpMethod method)
         {
-            using (var message = new AuthenticationRequestMessage(method, url, Authentication))
-            {
-                message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
+            using var message = new AuthenticationRequestMessage(method, url, Authentication);
+            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
 
-                using (var result = await Client.SendAsync(message))
-                {
-                    await HandleResponse(result);
-                }
-            }
+            using var result = await Client.SendAsync(message);
+            await HandleResponse(result);
         }
 
         /// <summary>
@@ -170,15 +150,11 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task<TRes> SendAsync<TRes>(string url, HttpMethod method)
         {
-            using (var message = new AuthenticationRequestMessage(method, url, Authentication))
-            {
-                message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
+            using var message = new AuthenticationRequestMessage(method, url, Authentication);
+            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
 
-                using (var result = await Client.SendAsync(message))
-                {
-                    return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
-                }
-            }
+            using var result = await Client.SendAsync(message);
+            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
         }
 
         /// <summary>
@@ -203,18 +179,12 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task SendAsync<TReq>(string url, HttpMethod method, TReq data)
         {
-            using (var message = new AuthenticationRequestMessage(method, url, Authentication))
-            {
-                using (var content = new RestContent<TReq>(data, DataAdapter))
-                {
-                    message.Content = content;
+            using var message = new AuthenticationRequestMessage(method, url, Authentication);
+            using var content = new RestContent<TReq>(data, DataAdapter);
+            message.Content = content;
 
-                    using (HttpResponseMessage result = await Client.SendAsync(message))
-                    {
-                        await HandleResponse(result);
-                    }
-                }
-            }
+            using HttpResponseMessage result = await Client.SendAsync(message);
+            await HandleResponse(result);
         }
 
         /// <summary>
@@ -240,20 +210,14 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task<TRes> SendAsync<TReq, TRes>(string url, HttpMethod method, TReq data)
         {
-            using (var message = new AuthenticationRequestMessage(method, url, Authentication))
-            {
-                message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
+            using var message = new AuthenticationRequestMessage(method, url, Authentication);
+            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
 
-                using (var content = new RestContent<TReq>(data, DataAdapter))
-                {
-                    message.Content = content;
+            using var content = new RestContent<TReq>(data, DataAdapter);
+            message.Content = content;
 
-                    using (HttpResponseMessage result = await Client.SendAsync(message))
-                    {
-                        return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
-                    }
-                }
-            }
+            using HttpResponseMessage result = await Client.SendAsync(message);
+            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
         }
 
         /// <summary>
@@ -352,20 +316,14 @@ namespace RestLesser
         /// <returns></returns>
         public async Task<TRes> PostAsync<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters)
         {
-            using (var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication))
-            {
-                message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
+            using var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication);
+            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
 
-                using (var content = new FormUrlEncodedContent(parameters))
-                {
-                    message.Content = content;
+            using var content = new FormUrlEncodedContent(parameters);
+            message.Content = content;
 
-                    using (HttpResponseMessage result = await Client.SendAsync(message))
-                    {
-                        return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
-                    }
-                }
-            }
+            using HttpResponseMessage result = await Client.SendAsync(message);
+            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
         }
 
         /// <summary>
@@ -388,22 +346,14 @@ namespace RestLesser
         /// <returns></returns>
         public async Task PostFileAsync(string url, Stream input)
         {
-            using (var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication))
-            {
-                using (var multipart = new MultipartFormDataContent())
-                {
-                    using (var content = new StreamContent(input))
-                    {
-                        multipart.Add(content);
-                        message.Content = multipart;
+            using var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication);
+            using var multipart = new MultipartFormDataContent();
+            using var content = new StreamContent(input);
+            multipart.Add(content);
+            message.Content = multipart;
 
-                        using (HttpResponseMessage result = await Client.SendAsync(message))
-                        {
-                            await HandleResponse(result);
-                        }
-                    }
-                }
-            }
+            using HttpResponseMessage result = await Client.SendAsync(message);
+            await HandleResponse(result);
         }
 
         /// <summary>
@@ -426,10 +376,8 @@ namespace RestLesser
         /// <exception cref="HttpRequestException"></exception>
         public async Task PostFileAsync(string url, string path)
         {
-            using (var file = File.OpenRead(path))
-            {
-                await PostFileAsync(url, file);
-            }
+            using var file = File.OpenRead(path);
+            await PostFileAsync(url, file);
         }
 
         /// <summary>
@@ -452,22 +400,16 @@ namespace RestLesser
         /// <exception cref="HttpRequestException"></exception>
         public async Task<TRes> PostFileAsync<TRes>(string url, Stream input)
         {
-            using (var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication))
-            {
-                message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);               
+            using var message = new AuthenticationRequestMessage(HttpMethod.Post, url, Authentication);
+            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
 
-                using (var multipart = new MultipartFormDataContent())
-                {
-                    var content = new StreamContent(input);
-                    multipart.Add(content);
-                    message.Content = multipart;
+            using var multipart = new MultipartFormDataContent();
+            var content = new StreamContent(input);
+            multipart.Add(content);
+            message.Content = multipart;
 
-                    using (HttpResponseMessage result = await Client.SendAsync(message))
-                    {
-                        return DataAdapter.Deserialize<TRes>(await HandleResponse(result)); 
-                    }
-                }
-            }                   
+            using HttpResponseMessage result = await Client.SendAsync(message);
+            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
         }
 
         /// <summary>
@@ -480,10 +422,8 @@ namespace RestLesser
         /// <exception cref="HttpRequestException"></exception>
         public async Task<TRes> PostFileAsync<TRes>(string url, string path)
         {
-            using (var file = File.OpenRead(path))
-            {
-                return await PostFileAsync<TRes>(url, file);
-            }
+            using var file = File.OpenRead(path);
+            return await PostFileAsync<TRes>(url, file);
         }
 
         /// <summary>
@@ -505,15 +445,13 @@ namespace RestLesser
         /// <param name="mediaType"></param>
         public async Task<HttpResponseMessage> GetFileAsync(string url, string mediaType)
         {
-            using (var message = new AuthenticationRequestMessage(HttpMethod.Get, url, Authentication))
+            using var message = new AuthenticationRequestMessage(HttpMethod.Get, url, Authentication);
+            if (mediaType != null)
             {
-                if (mediaType != null)
-                {
-                    message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
-                }
-
-                return await Client.SendAsync(message);
+                message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
             }
+
+            return await Client.SendAsync(message);
         }
 
         /// <summary>
@@ -535,13 +473,9 @@ namespace RestLesser
         /// <param name="mediaType"></param>
         public async Task GetFileAsync(string url, Stream output, string mediaType)
         {
-            using (var response = GetFile(url, mediaType))
-            {
-                using (var stream = response.Content)
-                {
-                    await stream.CopyToAsync(output);
-                }
-            }
+            using var response = GetFile(url, mediaType);
+            using var stream = response.Content;
+            await stream.CopyToAsync(output);
         }
 
         /// <summary>
@@ -563,10 +497,8 @@ namespace RestLesser
         /// <param name="mediaType"></param>
         public async Task GetFileAsync(string url, string path, string mediaType)
         {
-            using (var stream = File.OpenWrite(path))
-            {
-                await GetFileAsync(url, stream, mediaType);
-            }
+            using var stream = File.OpenWrite(path);
+            await GetFileAsync(url, stream, mediaType);
         }
 
         /// <summary>
