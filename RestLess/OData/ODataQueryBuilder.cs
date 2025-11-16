@@ -6,9 +6,38 @@ using RestLess.OData.Interfaces;
 
 namespace RestLess.OData
 {
+    /// <summary>
+    /// Select delegate
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public delegate object Select<T>(T value);
+
+    /// <summary>
+    /// Expand delegate
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public delegate IEnumerable Expand<T>(T value);
+
+    /// <summary>
+    /// FilterF delegate 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
+    /// <param name="filterCondition"></param>
+    /// <returns></returns>
     public delegate ICondition FilterF<T, U>(ConditionFactory<T, U> filterCondition);
+
+    /// <summary>
+    /// Filter delegate
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
+    /// <param name="filterCondition"></param>
+    /// <returns></returns>
     public delegate ICondition Filter<T, U>(FunctionFactory<T, U> filterCondition);
 
     /// <summary>
@@ -18,10 +47,21 @@ namespace RestLess.OData
     {
         private readonly Operation _operation = new Operation();
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="query"></param>
         public ODataQueryBuilder(string query) : base(query)
         { 
         }
 
+        /// <summary>
+        /// Set multiple expressions
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="expressions"></param>
+        /// <returns></returns>
         protected ODataQueryBuilder<TClass> SetExpressions<TDelegate>(string key, Expression<TDelegate>[] expressions)
             where TDelegate : class, Delegate
         {
@@ -35,7 +75,6 @@ namespace RestLess.OData
         /// <summary>
         /// Add $select
         /// </summary>
-        /// <typeparam name="TDelegate"></typeparam>
         /// <param name="selectors"></param>
         public ODataQueryBuilder<TClass> Select(params Expression<Select<TClass>>[] selectors)
         {
@@ -45,19 +84,20 @@ namespace RestLess.OData
         /// <summary>
         /// Add $select
         /// </summary>
-        /// <typeparam name="TDelegate"></typeparam>
-        /// <param name="selectors"></param>
+        /// <param name="expands"></param>
         public ODataQueryBuilder<TClass> Expand(params Expression<Expand<TClass>>[] expands)
         {
             return SetExpressions(Constants.Query.Expand, expands);
         }
-       
+
         /// <summary>
-        /// Filter on property of T. Strong typed.
+        /// Filter on property of TProperty. Strong typed.
         /// </summary>
-        /// <typeparam name="T">Main object type</typeparam>
-        /// <typeparam name="U">Parameter type</typeparam>
-        /// <param name="selectors"></param>
+        /// <typeparam name="TProperty">Main object type</typeparam>
+        /// <typeparam name="TFilter">Filter type</typeparam>
+        /// <param name="field"></param>
+        /// <param name="func"></param>
+        /// <param name="filter"></param>
         public ODataQueryBuilder<TClass> Filter<TProperty, TFilter>(
             Expression<Func<TClass, TProperty>> field,
                 Filter<TClass, TProperty> func,
@@ -75,6 +115,13 @@ namespace RestLess.OData
             return this;
         }
 
+        /// <summary>
+        /// Filter on property of TProperty using all functions
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="func"></param>
+        /// <returns></returns>
         public ODataQueryBuilder<TClass> Filter<TProperty>(
             Expression<Func<TClass, TProperty>> field,
                 Filter<TClass, TProperty> func)
@@ -139,6 +186,9 @@ namespace RestLess.OData
             return this;
         }
 
+        /// <summary>
+        /// Reset query
+        /// </summary>
         public override void Reset()
         {
             base.Reset();

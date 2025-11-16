@@ -13,28 +13,64 @@ namespace RestLess.OAuth.Provider
     /// </summary>
     public class ClientCredentials : TokenProvider
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="endPoint">Endpoint url</param>
+        /// <param name="clientCertificate"></param>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="storage"></param>
         public ClientCredentials(string endPoint, X509Certificate clientCertificate, string clientId, string clientSecret,
             ITokenStorage storage = null) : base(endPoint, clientCertificate, clientId, clientSecret, null, storage)
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="endPoint">Endpoint url</param>
+        /// <param name="authentication"></param>
+        /// <param name="clientCertificate"></param>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="storage"></param>
         public ClientCredentials(string endPoint, IAuthentication authentication, X509Certificate clientCertificate, 
             string clientId, string clientSecret, ITokenStorage storage = null) : 
                 base(endPoint, authentication, clientCertificate, clientId, clientSecret, null, storage)
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="endPoint">Endpoint url</param>
+        /// <param name="authentication"></param>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="storage"></param>
         public ClientCredentials(string endPoint, IAuthentication authentication, string clientId, 
             string clientSecret, ITokenStorage storage = null) : base(endPoint, authentication, clientId, 
                     clientSecret, null, storage)
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="endPoint">Endpoint url</param>
+        /// <param name="clientId"></param>
+        /// <param name="clientSecret"></param>
+        /// <param name="storage"></param>
         public ClientCredentials(string endPoint, string clientId, string clientSecret, ITokenStorage storage = null) : 
             base(endPoint, clientId, clientSecret, null, storage)
         {
         }
 
+        /// <summary>
+        /// Get client credentials
+        /// </summary>
+        /// <returns></returns>
         public TokenResponse GetClientCredentials()
         {
             IEnumerable<KeyValuePair<string, string>> parameters = BaseParameters
@@ -46,6 +82,7 @@ namespace RestLess.OAuth.Provider
             return RestClient.Post<TokenResponse>(Uri.PathAndQuery, parameters);
         }
 
+        /// <inheritdoc/>
         public override TokenResponse GetToken()
         {
             lock (this)

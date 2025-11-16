@@ -10,15 +10,21 @@ namespace RestLess.Authentication
         private readonly string _header;
         private readonly string _value;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="header">Header</param>
+        /// <param name="value">Value (token)</param>
         public HeaderAuthentication(string header, string value)
         {
             _header = header;
             _value = value;
         }
 
+        /// <inheritdoc/>
         public void SetAuthentication(HttpRequestMessage request)
         {
-            request.Headers.Add(_header, _value);
+            request.SetHeader(_header, _value);
         }
     }
 }

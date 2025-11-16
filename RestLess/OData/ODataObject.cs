@@ -8,6 +8,9 @@ namespace RestLess.OData
     /// </summary>
     public class ODataObject
     {
+        /// <summary>
+        /// Meta data
+        /// </summary>
         [JsonProperty("__metadata")]
         public Metadata Metadata { get; set; }
     }

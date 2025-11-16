@@ -46,6 +46,9 @@ namespace RestLess
             return this as TUrl;
         }
 
+        /// <summary>
+        /// Reset builder
+        /// </summary>
         public virtual void Reset()
         {
             QueryBuilder?.Reset();

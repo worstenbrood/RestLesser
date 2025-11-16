@@ -4,24 +4,67 @@ using System.Linq.Expressions;
 
 namespace RestLess.OData.Filter
 {
+    /// <summary>
+    /// Function methods
+    /// </summary>
     public enum Method
     {
+        /// <summary>
+        /// None
+        /// </summary>
         None,
+
+        /// <summary>
+        /// Contains
+        /// </summary>
         Contains,
+
+        /// <summary>
+        /// EndsWith
+        /// </summary>
         EndsWith,
+
+        /// <summary>
+        /// StartsWith
+        /// </summary>
         StartsWith,
+
+        /// <summary>
+        /// ToLower
+        /// </summary>
         ToLower,
+
+        /// <summary>
+        /// ToUpper
+        /// </summary>
         ToUpper,
+
+        /// <summary>
+        /// Substring
+        /// </summary>
         Substring
     }
 
+    /// <summary>
+    /// Function 
+    /// </summary>
+    /// <typeparam name="TClass"></typeparam>
+    /// <typeparam name="TProperty"></typeparam>
     public class Function<TClass, TProperty> : Condition<TClass, TProperty, Method>
     {
         private readonly Method _method;
         
+        /// <summary>
+        /// Default format string
+        /// </summary>
         private string DefaultFormat => $"{Operation}({{0}},{{2}})";
+
+        /// <summary>
+        /// Conditional format string (ToLower, ToUpper)
+        /// </summary>
         private string ConditionFormat => $"{Operation}({{0}})";
 
+        /// <inheritdoc/>
         protected override string Format => _method switch
         {
             Method.Contains => DefaultFormat,
@@ -33,18 +76,35 @@ namespace RestLess.OData.Filter
             _ => string.Empty,
         };        
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="operation"></param>
+        /// <param name="value"></param>
         public Function(Expression<Func<TClass, TProperty>> field, Method operation, 
             TProperty value) : base(field, operation, value)
         {
             _method = operation;
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="operation"></param>
+        /// <param name="value"></param>
         public Function(Expression<Func<TClass, TProperty>> field, Method operation, 
             TProperty[] value = null) : base(field, operation, value)
         {
             _method = operation;
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="value"></param>
         public Function(Method operation, TProperty[] value = null) : base(null, operation, value)
         {
             _method = operation;
@@ -52,6 +112,11 @@ namespace RestLess.OData.Filter
 
         private string[] _parameters;
 
+        /// <summary>
+        /// Set function parameters
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public Function<TClass, TProperty> SetParameters(params object[] parameters)
         {
             _parameters = parameters
@@ -61,6 +126,10 @@ namespace RestLess.OData.Filter
             return this;
         }
 
+        /// <summary>
+        /// Return string representation of this Function
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             if (_parameters == null || _parameters.Length == 0)

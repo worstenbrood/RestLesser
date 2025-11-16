@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Web;
+using System.Text;
+using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
-using System.Text;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 
 namespace RestLess
 {
+    /// <summary>
+    /// Class containing extension methods
+    /// </summary>
     public static class Extensions
     {
         #region Expression
@@ -146,7 +151,7 @@ namespace RestLess
         }
 
         /// <summary>
-        /// 
+        /// Set basic authentication header
         /// </summary>
         /// <param name="r"></param>
         /// <param name="user"></param>
@@ -154,6 +159,25 @@ namespace RestLess
         public static void SetBasic(this HttpRequestMessage r, string user, string pass)
         {
             r.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user}:{pass}")));
+        }
+
+        /// <summary>
+        /// Set url query parameters
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public static void SetUrlAuthentication(this HttpRequestMessage r, string name, string value)
+        {
+            NameValueCollection httpValueCollection = HttpUtility.ParseQueryString(r.RequestUri.Query);
+            httpValueCollection.Add(name, value);
+
+            UriBuilder ub = new UriBuilder(r.RequestUri)
+            {
+                Query = httpValueCollection.ToString()
+            };
+
+            r.RequestUri = ub.Uri;
         }
 
         #endregion

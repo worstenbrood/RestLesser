@@ -1,7 +1,4 @@
-﻿using System;
-using System.Web;
-using System.Net.Http;
-using System.Collections.Specialized;
+﻿using System.Net.Http;
 
 namespace RestLess.Authentication
 {
@@ -13,23 +10,21 @@ namespace RestLess.Authentication
         private readonly string _key;
         private readonly string _value;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="key">Url query parameter</param>
+        /// <param name="value">Value</param>
         public UrlAuthentication(string key, string value)
         {
             _key = key;
             _value = value;
         }
 
+        /// <inheritdoc/>
         public void SetAuthentication(HttpRequestMessage request)
         {
-            NameValueCollection httpValueCollection = HttpUtility.ParseQueryString(request.RequestUri.Query);
-            httpValueCollection.Add(_key, _value);
-
-            UriBuilder ub = new UriBuilder(request.RequestUri)
-            {
-                Query = httpValueCollection.ToString()
-            };
-
-            request.RequestUri = ub.Uri;
+            request.SetUrlAuthentication(_key, _value);
         }
     }
 }

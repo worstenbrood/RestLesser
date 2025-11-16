@@ -10,21 +10,37 @@ namespace RestLess.OAuth.Storage
     
     public class TokenData
     {
+        /// <summary>
+        /// Token response
+        /// </summary>
         [JsonProperty(PropertyName = "token_response")]
         public TokenResponse TokenResponse { get; private set; }
 
+        /// <summary>
+        /// Expiry date
+        /// </summary>
         [JsonProperty(PropertyName = "expire_datetime")]
         public DateTime ExpireDateTime { get; private set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public TokenData()
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public TokenData(TokenResponse tokenResponse)
         {
             Update(tokenResponse);
         }
 
+        /// <summary>
+        /// Update token response
+        /// </summary>
+        /// <param name="tokenResponse"></param>
         public void Update(TokenResponse tokenResponse)
         {
             TokenResponse = tokenResponse;

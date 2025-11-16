@@ -10,6 +10,9 @@ namespace RestLess.DataAdapters
     {
         private JsonSerializerSettings _serializerSettings;
 
+        /// <summary>
+        /// Serializer settings
+        /// </summary>
         public override JsonSerializerSettings SerializerSettings =>
             _serializerSettings ??= new JsonSerializerSettings
             {

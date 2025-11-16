@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http;
 
 namespace RestLess.Authentication
 {
@@ -13,15 +10,21 @@ namespace RestLess.Authentication
         private readonly string _username;
         private readonly string _password;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
         public BasicAuthentication(string username, string password)
         {
             _username = username;
             _password = password;
         }
 
+        /// <inheritdoc/>
         public void SetAuthentication(HttpRequestMessage request)
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_username}:{_password}")));
+            request.SetBasic(_username, _password);
         }
     }
 }

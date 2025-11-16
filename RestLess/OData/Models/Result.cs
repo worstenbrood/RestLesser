@@ -8,6 +8,9 @@ namespace RestLess.OData.Models
     /// <typeparam name="T">Type of the result</typeparam>
     public class Result<T>
     {
+        /// <summary>
+        /// Data
+        /// </summary>
         [JsonProperty("d")]
         public Data<T> Data { get; set; }
     }

@@ -11,17 +11,22 @@ namespace RestLess.OAuth.Authentication
     /// </summary>
     public class OAuthAuthentication : IAuthentication
     {
-        private readonly ITokenProvider _client;
+        private readonly ITokenProvider _provider;
 
-        public OAuthAuthentication(ITokenProvider client)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="provider">TokenProvider</param>
+        public OAuthAuthentication(ITokenProvider provider)
         {
-            _client = client;
+            _provider = provider;
         }
 
+        /// <inheritdoc/>
         public void SetAuthentication(HttpRequestMessage request)
         {
-            TokenResponse response = _client.GetToken();
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", response.AccessToken);
+            TokenResponse response = _provider.GetToken();
+            request.SetToken(response.AccessToken);
         }
     }
 }

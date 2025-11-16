@@ -98,6 +98,12 @@ namespace RestLess
             DataAdapter = dataAdapter ?? new JsonAdapter();
         }
 
+        /// <summary>
+        /// Http response handler
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
         protected virtual async Task<string> HandleResponse(HttpResponseMessage response)
         {
             string body = await response.Content.ReadAsStringAsync();
@@ -125,6 +131,13 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// Send async
+        /// </summary>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
         protected async Task<TRes> SendAsync<TRes>(string url, HttpMethod method)
         {
             using (var message = new AuthenticationRequestMessage(method, url, Authentication))
@@ -138,11 +151,26 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// Send sync
+        /// </summary>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
         protected TRes Send<TRes>(string url, HttpMethod method)
         {
             return SendAsync<TRes>(url, method).SyncResult();
         }
 
+        /// <summary>
+        /// Send async
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected async Task SendAsync<TReq>(string url, HttpMethod method, TReq data)
         {
             using (var message = new AuthenticationRequestMessage(method, url, Authentication))
@@ -159,11 +187,27 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// Send sync
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="data"></param>
         protected void Send<TReq>(string url, HttpMethod method, TReq data)
         {
             SendAsync(url, method, data).SyncResult();
         }
 
+        /// <summary>
+        /// Send async
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected async Task<TRes> SendAsync<TReq, TRes>(string url, HttpMethod method, TReq data)
         {
             using (var message = new AuthenticationRequestMessage(method, url, Authentication))
@@ -182,6 +226,15 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// Send sync
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="method"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected TRes Send<TReq, TRes>(string url, HttpMethod method, TReq data)
         {
             return SendAsync<TReq, TRes>(url, method, data).SyncResult();
@@ -199,6 +252,12 @@ namespace RestLess
             return await SendAsync<TRes>(url, HttpMethod.Get);
         }
 
+        /// <summary>
+        /// Get sync
+        /// </summary>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public TRes Get<TRes>(string url)
         {
             return GetAsync<TRes>(url).SyncResult();
@@ -216,6 +275,12 @@ namespace RestLess
             await SendAsync(url, HttpMethod.Post, data);
         }
 
+        /// <summary>
+        /// Post sync
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
         public void Post<TReq>(string url, TReq data)
         {
             PostAsync(url, data).SyncResult();
@@ -235,6 +300,14 @@ namespace RestLess
             return await SendAsync<TReq, TRes>(url, HttpMethod.Post, data);
         }
 
+        /// <summary>
+        /// Post sync
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public TRes Post<TReq, TRes>(string url, TReq data)
         {
             return PostAsync<TReq, TRes>(url, data).SyncResult();
@@ -265,6 +338,13 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// Post sync
+        /// </summary>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public TRes Post<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters)
         {
             return PostAsync<TRes>(url, parameters).SyncResult();
@@ -300,7 +380,12 @@ namespace RestLess
             }
         }
 
-        public async void PostFile(string url, string path)
+        /// <summary>
+        /// PostFile sync
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="path"></param>
+        public void PostFile(string url, string path)
         {
             PostFileAsync(url, path).SyncResult();
         }
@@ -338,7 +423,14 @@ namespace RestLess
             }                   
         }
 
-        public async Task<TRes> PostFile<TRes>(string url, string path)
+        /// <summary>
+        /// PorstFile sync
+        /// </summary>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public TRes PostFile<TRes>(string url, string path)
         {
             return PostFileAsync<TRes>(url, path).SyncResult();
         }
@@ -347,7 +439,6 @@ namespace RestLess
         /// Download a file
         /// </summary>
         /// <param name="url">Url</param>
-        /// <param name="Stream">Stream to copy to</param>
         /// <param name="mediaType"></param>
         public async Task<HttpResponseMessage> GetFileAsync(string url, string mediaType)
         {
@@ -362,6 +453,12 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// GetFile sync
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="mediaType"></param>
+        /// <returns></returns>
         public HttpResponseMessage GetFile(string url, string mediaType)
         {
             return GetFileAsync(url, mediaType).SyncResult();
@@ -371,7 +468,7 @@ namespace RestLess
         /// Download a file
         /// </summary>
         /// <param name="url">Url</param>
-        /// <param name="Stream">Stream to copy to</param>
+        /// <param name="output">Stream to copy to</param>
         /// <param name="mediaType"></param>
         public async Task GetFileAsync(string url, Stream output, string mediaType)
         {
@@ -384,6 +481,12 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// GetFile sync
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="output"></param>
+        /// <param name="mediaType"></param>
         public void GetFile(string url, Stream output, string mediaType)
         {
             GetFileAsync(url, output, mediaType).SyncResult();
@@ -403,6 +506,12 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// GetFile sync
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="path"></param>
+        /// <param name="mediaType"></param>
         public void GetFile(string url, string path, string mediaType)
         {
             GetFileAsync(url, path, mediaType).SyncResult();
@@ -419,6 +528,12 @@ namespace RestLess
             await SendAsync(url, new HttpMethod("PATCH"), data);
         }
 
+        /// <summary>
+        /// Sync
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
         public void Patch<TReq>(string url, TReq data)
         {
             PatchAsync(url, data).SyncResult();
@@ -439,11 +554,18 @@ namespace RestLess
             }
         }
 
+        /// <summary>
+        /// Delete sync
+        /// </summary>
+        /// <param name="url"></param>
         public void Delete(string url)
         {
             DeleteAsync(url).SyncResult();
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         public void Dispose()
         {            
             Client?.Dispose();

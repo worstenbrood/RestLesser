@@ -12,6 +12,11 @@ namespace RestLess.OData
         private readonly ODataClient _client;
         private TClass[] _entries;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="path"></param>
         public ODataUrlBuilder(ODataClient client, string path) : base(path, new ODataQueryBuilder<TClass>(path))
         {
             _client = client;
@@ -104,18 +109,25 @@ namespace RestLess.OData
         /// <summary>
         /// Set a single entry (used later by the Post calls)
         /// </summary>
-        /// <param name="entries">Entries to set</param>
+        /// <param name="entry">Entry to set</param>
         public void Set(TClass entry)
         {
             _entries = new[] { entry };
         }
 
+        /// <summary>
+        /// Reset
+        /// </summary>
         public override void Reset()
         {
             _entries = null;
             base.Reset();
         }  
 
+        /// <summary>
+        /// Reset query
+        /// </summary>
+        /// <returns></returns>
         public ODataUrlBuilder<TClass> ResetQuery()
         {
             Reset();
