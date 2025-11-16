@@ -1,5 +1,4 @@
 ﻿using System.Net.Http;
-using System.Net.Http.Headers;
 using RestLess.Authentication;
 using RestLess.OAuth.Models;
 using RestLess.OAuth.Provider;
