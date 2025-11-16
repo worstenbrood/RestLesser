@@ -27,8 +27,9 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl></RepositoryUrl>
+		<RepositoryUrl>https://github.com/worstenbrood/RestLess.git</RepositoryUrl>
 		<NeutralLanguage>en</NeutralLanguage>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
