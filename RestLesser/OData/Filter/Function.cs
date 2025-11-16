@@ -125,17 +125,14 @@ namespace RestLesser.OData.Filter
 
             return this;
         }
-
         private string HandleParameters()
         {
             var parameters = string.Join(Constants.Query.ParameterSeparator, _parameters);
-            switch (_method)
+            return _method switch
             {
-                case Method.Substring:
-                    return $"{Operation}({Field},{parameters})";
-                default:
-                    return base.ToString();
-            }
+                Method.Substring => $"{Operation}({Field},{parameters})",
+                _ => base.ToString(),
+            };
         }
 
         /// <summary>
@@ -144,12 +141,8 @@ namespace RestLesser.OData.Filter
         /// <returns></returns>
         public override string ToString()
         {
-            if (_parameters == null || _parameters.Length == 0)
-            {
-                return base.ToString();
-            }
-
-            return HandleParameters();
+            return (_parameters == null || _parameters.Length == 0) ? 
+                base.ToString() : HandleParameters();
         }
     }
 }
