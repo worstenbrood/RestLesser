@@ -23,7 +23,7 @@ namespace RestLesser.OData.Filter
         /// <param name="condition"></param>
         public void Add(ICondition condition)
         {
-            _conditions.Add($"{condition}");
+            _conditions.Add(condition.ToString());
         }
 
         /// <summary>
