@@ -9,21 +9,16 @@ namespace RestLesser.OData.Filter
     /// </summary>
     /// <typeparam name="TClass"></typeparam>
     /// <typeparam name="TProperty"></typeparam>
-    public class ConditionFactory<TClass, TProperty>
+    /// <remarks>
+    /// Constructor
+    /// </remarks>
+    /// <param name="property"></param>
+    public class ConditionFactory<TClass, TProperty>(Expression<Func<TClass, TProperty>> property = null)
     {
         /// <summary>
         /// Property
         /// </summary>
-        protected readonly Expression<Func<TClass, TProperty>> Property;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="property"></param>
-        public ConditionFactory(Expression<Func<TClass, TProperty>> property = null)
-        {
-            Property = property;
-        }
+        protected readonly Expression<Func<TClass, TProperty>> Property = property;
 
         /// <summary>
         /// Equals
@@ -87,18 +82,13 @@ namespace RestLesser.OData.Filter
     /// </summary>
     /// <typeparam name="TClass"></typeparam>
     /// <typeparam name="TProperty"></typeparam>
-    public class FunctionFactory<TClass, TProperty> : ConditionFactory<TClass, TProperty>
+    /// <remarks>
+    /// Constructor
+    /// </remarks>
+    /// <param name="property"></param>
+    public class FunctionFactory<TClass, TProperty>(Expression<Func<TClass, TProperty>> property) : ConditionFactory<TClass, TProperty>(property)
     {
-        private readonly ConditionFactory<TClass, TProperty> _after;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="property"></param>
-        public FunctionFactory(Expression<Func<TClass, TProperty>> property) : base(property)
-        {
-            _after = new ConditionFactory<TClass, TProperty>();
-        }
+        private readonly ConditionFactory<TClass, TProperty> _after = new();
 
         /// <summary>
         /// Contains

@@ -11,7 +11,6 @@ namespace RestLesser.DataAdapters
         public override T Deserialize<T>(string body)
         {
             var result = base.Deserialize<Result<T>>(body);
-            
             return result.Data.Results;
         }
 

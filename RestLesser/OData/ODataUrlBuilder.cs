@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace RestLesser.OData
 {
     /// <summary>
-    /// UrlBuilder with specific logic for odata
+    /// UrlBuilder with specific logic for OData
     /// </summary>
     public class ODataUrlBuilder<TClass> : UrlBuilder<ODataUrlBuilder<TClass>, 
         ODataQueryBuilder<TClass>>
@@ -113,7 +113,7 @@ namespace RestLesser.OData
         /// <param name="entry">Entry to set</param>
         public void Set(TClass entry)
         {
-            _entries = new[] { entry };
+            _entries = [entry];
         }
 
         /// <summary>

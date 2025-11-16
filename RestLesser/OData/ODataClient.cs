@@ -8,17 +8,13 @@ namespace RestLesser.OData
     /// <summary>
     /// OData rest client
     /// </summary>
-    public class ODataClient : RestClient
+    /// <remarks>
+    /// Constructor
+    /// </remarks>
+    /// <param name="baseUrl"></param>
+    /// <param name="authentication"></param>
+    public class ODataClient(string baseUrl, IAuthentication authentication) : RestClient(baseUrl, authentication, dataAdapter: new ODataJsonAdapter())
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="baseUrl"></param>
-        /// <param name="authentication"></param>
-        public ODataClient(string baseUrl, IAuthentication authentication) : base(baseUrl, authentication, dataAdapter: new ODataJsonAdapter())
-        { 
-        }
-
         /// <summary>
         /// Generic method to fetch a collection of certain types and 
         /// be able to select which fields to select
@@ -95,7 +91,7 @@ namespace RestLesser.OData
         /// <param name="entry"></param>
         public async Task PostEntryAsync<TClass>(ODataUrlBuilder<TClass> builder, TClass entry)
         {
-            await PostEntriesAsync(builder, new[] { entry });
+            await PostEntriesAsync(builder, [entry]);
         }
 
         /// <summary>
@@ -106,7 +102,7 @@ namespace RestLesser.OData
         /// <param name="entry"></param>
         public void PostEntry<TClass>(ODataUrlBuilder<TClass> builder, TClass entry)
         {
-            PostEntries(builder, new[] { entry });
+            PostEntries(builder, [entry]);
         }
 
         /// <summary>

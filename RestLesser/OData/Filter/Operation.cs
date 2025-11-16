@@ -9,11 +9,8 @@ namespace RestLesser.OData.Filter
     /// Operation class
     /// </summary>
     public class Operation : IEnumerable<string>
-    {
-        private const string Separator = " ";
-                
-        private readonly List<string> _conditions = new List<string>();
-
+    {     
+        private readonly List<string> _conditions = [];
 
         /// <summary>
         /// Return condition count
@@ -35,7 +32,7 @@ namespace RestLesser.OData.Filter
         /// <param name="conditions"></param>
         public void Add(params ICondition[] conditions)
         {
-            _conditions.AddRange(conditions.Select(c => $"{c}"));
+            _conditions.AddRange(conditions.Select(c => c.ToString()));
         }
 
         /// <summary>
@@ -50,7 +47,7 @@ namespace RestLesser.OData.Filter
         public override string ToString()
         {
             // Join conditions
-            return string.Join(Separator, _conditions);
+            return string.Join(Constants.Query.ConditionSeparator, _conditions);
         }
 
         /// <inheritdoc/>

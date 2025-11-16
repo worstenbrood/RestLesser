@@ -63,7 +63,7 @@ namespace RestLesser.OData.Filter
         /// {1} = operation/function
         /// {2} = value
         /// </summary>
-        protected virtual string Format => GenerateFormat(" ", Field, Operation, Value);
+        protected virtual string Format => GenerateFormat(Constants.Query.ConditionSeparator, Field, Operation, Value);
 
         /// <summary>
         /// Return formatted string
@@ -103,7 +103,7 @@ namespace RestLesser.OData.Filter
         {
             if (value != null)
             {
-                Value = $"({string.Join(",", value.Select(v => v.ToODataValue()))})";
+                Value = $"({string.Join(Constants.Query.ParameterSeparator, value.Select(v => v.ToODataValue()))})";
             }
         }
     }

@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using RestLesser.OAuth.Storage;
-using RestLesser.OAuth;
 using RestLesser.Authentication;
+using RestLesser.OAuth.Storage;
 using RestLesser.OAuth.Models;
 
 namespace RestLesser.OAuth.Provider
@@ -27,7 +26,7 @@ namespace RestLesser.OAuth.Provider
         /// <summary>
         /// Post parameters
         /// </summary>
-        protected readonly Dictionary<string, string> BaseParameters = new Dictionary<string, string>();
+        protected readonly Dictionary<string, string> BaseParameters = new ();
 
         /// <summary>
         /// Rest client

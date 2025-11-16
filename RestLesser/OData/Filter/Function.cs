@@ -1,5 +1,4 @@
-﻿using RestLesser.OData;
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -127,6 +126,18 @@ namespace RestLesser.OData.Filter
             return this;
         }
 
+        private string HandleParameters()
+        {
+            var parameters = string.Join(Constants.Query.ParameterSeparator, _parameters);
+            switch (_method)
+            {
+                case Method.Substring:
+                    return $"{Operation}({Field},{parameters})";
+                default:
+                    return base.ToString();
+            }
+        }
+
         /// <summary>
         /// Return string representation of this Function
         /// </summary>
@@ -138,15 +149,7 @@ namespace RestLesser.OData.Filter
                 return base.ToString();
             }
 
-            var parameters = string.Join(",", _parameters);
-
-            switch(_method)
-            {
-                case Method.Substring:
-                    return $"{Operation}({Field},{parameters})";
-                default:
-                    return base.ToString();
-            }
+            return HandleParameters();
         }
     }
 }

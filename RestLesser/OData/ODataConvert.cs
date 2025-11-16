@@ -16,10 +16,15 @@ namespace RestLesser.OData
         {
             return value switch
             {
+                // Guid
                 Guid guid => $"guid'{guid:D}'",
-                long l => $"{l}L", 
+                // DateTime
                 DateTime date => $"datetime'{date:s}'",
+                // long
+                long l => $"{l}L",
+                // string
                 string s => $"'{s}'",
+                // others
                 _ => value.ToString(),
             };
         }

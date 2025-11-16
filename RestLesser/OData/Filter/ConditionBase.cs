@@ -6,18 +6,16 @@ namespace RestLesser.OData.Filter
     /// Condition base class
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ConditionBase<T> : ICondition
+    /// <remarks>
+    /// Constructor
+    /// </remarks>
+    /// <param name="value"></param>
+    public class ConditionBase<T>(string value) : ICondition
     {
         /// <summary>
         /// Value
         /// </summary>
-        protected readonly string Value;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="value"></param>
-        public ConditionBase(string value) { Value = value; }
+        protected readonly string Value = value;
 
         /// <summary>
         /// Returns <see cref="Value"/>

@@ -39,6 +39,16 @@
             /// Desc
             /// </summary>
             public const string Desc = "desc";
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public const string ConditionSeparator = " ";
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public const string ParameterSeparator = ",";
         }
     }
 }

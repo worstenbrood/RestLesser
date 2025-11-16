@@ -9,7 +9,7 @@ namespace RestLesser.OAuth.Storage
     /// </summary>
     public class LocalStorage : ITokenStorage
     {
-        private readonly JsonAdapter _adapter = new JsonAdapter();
+        private readonly JsonAdapter _adapter = new ();
 
         /// <inheritdoc/>
         public TokenData Load(string filename) => _adapter.Deserialize<TokenData>(File.ReadAllText(filename, Encoding.UTF8));

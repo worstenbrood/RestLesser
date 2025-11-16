@@ -41,11 +41,11 @@ namespace RestLesser.OData
     public delegate ICondition FunctionF<T, U>(FunctionFactory<T, U> filterCondition);
 
     /// <summary>
-    /// QueryBuilder with specific logic for odata
+    /// QueryBuilder with specific logic for OData
     /// </summary>
     public class ODataQueryBuilder<TClass> : QueryBuilder
     {
-        private readonly Operation _operation = new Operation();
+        private readonly Operation _operation = [];
 
         /// <summary>
         /// Constructor
