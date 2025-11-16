@@ -8,7 +8,6 @@ using System.Security.Cryptography.X509Certificates;
 using RestLess.Authentication;
 using RestLess.DataAdapters;
 using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 
 namespace RestLess
 {
