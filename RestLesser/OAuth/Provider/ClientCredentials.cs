@@ -93,7 +93,7 @@ namespace RestLesser.OAuth.Provider
                 TokenData tokenData = LoadToken();
                 if (tokenData != null)
                 {
-                    if (tokenData.ExpireDateTime.AddMinutes(-1) >= DateTime.Now)
+                    if (!tokenData.IsExpired)
                     {
                         // Reuse stored token
                         return tokenData.TokenResponse;

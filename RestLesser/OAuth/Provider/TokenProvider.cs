@@ -200,7 +200,7 @@ namespace RestLesser.OAuth.Provider
                 TokenData tokenData = LoadToken() ?? throw new Exception($"No token found for {ClientId}");
 
                 // Check if token is expired
-                if (tokenData.ExpireDateTime.AddMinutes(-1) >= DateTime.Now)
+                if (!tokenData.IsExpired)
                 {
                     return tokenData.TokenResponse;
                 }

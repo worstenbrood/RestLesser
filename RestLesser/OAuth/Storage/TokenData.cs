@@ -30,6 +30,11 @@ namespace RestLesser.OAuth.Storage
         }
 
         /// <summary>
+        /// Returns true if the token is expired
+        /// </summary>
+        public bool IsExpired => ExpireDateTime.AddSeconds(30) < DateTime.UtcNow;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public TokenData(TokenResponse tokenResponse)
@@ -44,7 +49,7 @@ namespace RestLesser.OAuth.Storage
         public void Update(TokenResponse tokenResponse)
         {
             TokenResponse = tokenResponse;
-            ExpireDateTime = DateTime.Now.AddSeconds(tokenResponse.ExpiresIn);
+            ExpireDateTime = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn);
         }
     }
 }
