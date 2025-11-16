@@ -45,7 +45,7 @@ namespace RestLesser.OData
         /// Add $expand
         /// </summary>
         public ODataUrlBuilder<TClass> Filter<TProperty>(Expression<Func<TClass, TProperty>> field, 
-            Filter<TClass, TProperty> condition)
+            FunctionF<TClass, TProperty> condition)
         {
             QueryBuilder.Filter(field, condition);
             return this;

@@ -29,7 +29,7 @@ namespace RestLesser.OData
     /// <typeparam name="U"></typeparam>
     /// <param name="filterCondition"></param>
     /// <returns></returns>
-    public delegate ICondition FilterF<T, U>(ConditionFactory<T, U> filterCondition);
+    public delegate ICondition ConditionF<T, U>(ConditionFactory<T, U> filterCondition);
 
     /// <summary>
     /// Filter delegate
@@ -38,7 +38,7 @@ namespace RestLesser.OData
     /// <typeparam name="U"></typeparam>
     /// <param name="filterCondition"></param>
     /// <returns></returns>
-    public delegate ICondition Filter<T, U>(FunctionFactory<T, U> filterCondition);
+    public delegate ICondition FunctionF<T, U>(FunctionFactory<T, U> filterCondition);
 
     /// <summary>
     /// QueryBuilder with specific logic for odata
@@ -100,7 +100,7 @@ namespace RestLesser.OData
         /// <param name="filter"></param>
         public ODataQueryBuilder<TClass> Filter<TProperty, TFilter>(
             Expression<Func<TClass, TProperty>> field,
-                Filter<TClass, TProperty> func,
+                FunctionF<TClass, TProperty> func,
                 TFilter filter) 
             where TFilter : FunctionFactory<TClass, TProperty>
 
@@ -124,7 +124,7 @@ namespace RestLesser.OData
         /// <returns></returns>
         public ODataQueryBuilder<TClass> Filter<TProperty>(
             Expression<Func<TClass, TProperty>> field,
-                Filter<TClass, TProperty> func)
+                FunctionF<TClass, TProperty> func)
         {
             var filter = new FunctionFactory<TClass, TProperty>(field);
             return Filter(field, func, filter);

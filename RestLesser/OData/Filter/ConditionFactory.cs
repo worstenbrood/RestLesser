@@ -129,7 +129,7 @@ namespace RestLesser.OData.Filter
         /// </summary>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public ICondition ToLower(FilterF<TClass, TProperty> condition)
+        public ICondition ToLower(ConditionF<TClass, TProperty> condition)
         {
             // Prepare function
             var function = new Function<TClass, TProperty>(Property, Method.ToLower);
@@ -143,7 +143,7 @@ namespace RestLesser.OData.Filter
         /// </summary>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public ICondition ToUpper(FilterF<TClass, TProperty> condition)
+        public ICondition ToUpper(ConditionF<TClass, TProperty> condition)
         {
             // Prepare function
             var function = new Function<TClass, TProperty>(Property, Method.ToUpper);
@@ -158,7 +158,7 @@ namespace RestLesser.OData.Filter
         /// <param name="len"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        public ICondition Substring(int len, FilterF<TClass, TProperty> condition)
+        public ICondition Substring(int len, ConditionF<TClass, TProperty> condition)
         {
             // Prepare function and set parameter 
             var function = new Function<TClass, TProperty>(Property, Method.Substring)
