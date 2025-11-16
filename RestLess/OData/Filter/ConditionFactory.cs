@@ -1,6 +1,6 @@
-﻿using RestLess.OData.Interfaces;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using RestLess.OData.Interfaces;
 
 namespace RestLess.OData.Filter
 {
