@@ -8,7 +8,6 @@ using RestLess.Authentication;
 
 namespace RestLess.OAuth.Provider
 {
-
     /// <summary>
     /// TokenProvider for Client Credentials flow
     /// </summary>

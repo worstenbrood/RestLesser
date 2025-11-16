@@ -16,7 +16,6 @@ namespace RestLess.OData
         /// </summary>
         /// <typeparam name="T">Type to fetch</typeparam>
         /// <param name="builder">Url builder</param>
-        /// <param name="selectors">Fields to select</param>
         /// <returns></returns>
         public T[] GetEntries<T>(ODataUrlBuilder<T> builder)
         {
@@ -29,7 +28,6 @@ namespace RestLess.OData
         /// </summary>
         /// <typeparam name="T">Type to fetch</typeparam>
         /// <param name="builder">Url builder</param>
-        /// <param name="selectors">Fields to select</param>
         /// <returns></returns>
         public T GetEntry<T>(ODataUrlBuilder<T> builder)
         {
@@ -52,7 +50,7 @@ namespace RestLess.OData
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="entries"></param>
+        /// <param name="entry"></param>
         public void PostEntry<T>(ODataUrlBuilder<T> builder, T entry)
         {
             PostEntries(builder, new[] { entry });
