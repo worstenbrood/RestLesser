@@ -60,4 +60,134 @@ public class ODataUrlBuilderTests
 
         Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Name+eq+%27test%27"));
     }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Gt()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.Gt(5));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+gt+5"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Lt()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.Lt(5));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+lt+5"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Le()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.Le(5));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+le+5"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Ge()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.Ge(5));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+ge+5"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Ne()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.Ne(5));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+ne+5"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_StartsWith()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Name, c => c.StartsWith("test"));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=startswith(Name%2c%27test%27)"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_EndsWith()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Name, c => c.EndsWith("test"));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=endswith(Name%2c%27test%27)"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Contains()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Name, c => c.Contains("test"));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=contains(Name%2c%27test%27)"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_ToLower()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Name, c => c.ToLower(d => d.Eq("test")));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=tolower(Name)+eq+%27test%27"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_ToUpper()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Name, c => c.ToUpper(d => d.Eq("test")));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=toupper(Name)+eq+%27test%27"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Substring()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Name, c => c.Substring(5, d => d.Eq("test")));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=substring(Name%2c5)+eq+%27test%27"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_In()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.In(1, 2, 3));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+in+(1%2c2%2c3)"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_And()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.Gt(1))
+            .And()
+            .Filter(x => x.Id, c => c.Lt(9));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+gt+1+and+Id+lt+9"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_FilterTest_Or()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Filter(x => x.Id, c => c.Gt(1))
+            .Or()
+            .Filter(x => x.Id, c => c.Lt(9));
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+gt+1+or+Id+lt+9"));
+    }
 }
