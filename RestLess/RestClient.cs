@@ -338,6 +338,11 @@ namespace RestLess
             }                   
         }
 
+        public async Task<TRes> PostFile<TRes>(string url, string path)
+        {
+            return PostFileAsync<TRes>(url, path).SyncResult();
+        }
+
         /// <summary>
         /// Download a file
         /// </summary>
