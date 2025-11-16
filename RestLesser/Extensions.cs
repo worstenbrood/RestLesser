@@ -170,9 +170,9 @@ namespace RestLesser
         public static void SetUrlAuthentication(this HttpRequestMessage r, string name, string value)
         {
             NameValueCollection httpValueCollection = HttpUtility.ParseQueryString(r.RequestUri.Query);
-            httpValueCollection.Add(name, value);
+            httpValueCollection[name] = value;
 
-            UriBuilder ub = new UriBuilder(r.RequestUri)
+            UriBuilder ub = new(r.RequestUri)
             {
                 Query = httpValueCollection.ToString()
             };
