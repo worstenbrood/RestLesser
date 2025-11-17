@@ -9,12 +9,20 @@ namespace RestLesser.OAuth.Storage
     /// </summary>
     public class LocalStorage : ITokenStorage
     {
-        private readonly JsonAdapter _adapter = new ();
+        /// <summary>
+        /// Json adapter
+        /// </summary>
+        public static readonly JsonAdapter Adapter = new ();
+
+        static LocalStorage()
+        {
+            Adapter.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+        }
 
         /// <inheritdoc/>
-        public TokenData Load(string filename) => _adapter.Deserialize<TokenData>(File.ReadAllText(filename, Encoding.UTF8));
+        public TokenData Load(string filename) => Adapter.Deserialize<TokenData>(File.ReadAllText(filename, Encoding.UTF8));
         
         /// <inheritdoc/>
-        public void Save(string filename, TokenData token) => File.WriteAllText(filename, _adapter.Serialize(token), Encoding.UTF8);
+        public void Save(string filename, TokenData token) => File.WriteAllText(filename, Adapter.Serialize(token), Encoding.UTF8);
     }
 }
