@@ -1,4 +1,6 @@
-﻿# RestLesser
+[![.NET](https://github.com/worstenbrood/RestLesser/actions/workflows/dotnet.yml/badge.svg)](https://github.com/worstenbrood/RestLesser/actions/workflows/dotnet.yml)
+ 
+ # RestLesser
 
 RestLesser is a rest/OData client with no dependencies except for Newtonsoft.Json (it supports custom data adapters).
 It includes basic, token, header, url and OAuth authentication.
