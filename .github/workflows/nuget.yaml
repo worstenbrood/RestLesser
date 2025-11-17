@@ -21,7 +21,5 @@ jobs:
       run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
     - name: Pack
       run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
-    #- name: Push
-    #  run: dotnet nuget push RestLesser.${VERSION}.nupkg --source https://nuget.pkg.github.com/worstenbrood/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-    #  env:
-    #    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Push
+      run: dotnet nuget push RestLesser.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_ORG_TOKEN }}
