@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RestLesser.OData.Attributes;
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace RestLesser.OData
@@ -17,18 +19,20 @@ namespace RestLesser.OData
         /// Set entries (used later by the Post calls)
         /// </summary>
         /// <param name="entries">Entries to set</param>
-        public void Set(TClass[] entries)
+        public ODataQuery<TClass> Set(TClass[] entries)
         {
             _entries = entries;
+            return this;
         }
 
         /// <summary>
         /// Set a single entry (used later by the Post calls)
         /// </summary>
         /// <param name="entry">Entry to set</param>
-        public void Set(TClass entry)
+        public ODataQuery<TClass> Set(TClass entry)
         {
             _entries = [entry];
+            return this;
         }
 
         /// <summary>
@@ -71,7 +75,7 @@ namespace RestLesser.OData
         /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<ODataUrlBuilder<TClass>> PostEntriesAsync()
+        public async Task<ODataQuery<TClass>> PostEntriesAsync()
         {
             if (_entries == null || _entries.Length == 0)
             {
@@ -82,17 +86,21 @@ namespace RestLesser.OData
             return this;
         }
 
-        /// <summary>
-        /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
-        /// </summary>
-        /// <exception cref="ArgumentNullException"></exception>
-        public ODataUrlBuilder<TClass> PostEntries()
+        private void ValidateEntries()
         {
             if (_entries == null || _entries.Length == 0)
             {
                 throw new ArgumentNullException(nameof(_entries), "Use Set() first.");
             }
+        }
 
+        /// <summary>
+        /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ODataQuery<TClass> PostEntries()
+        {
+            ValidateEntries();
             client.PostEntries(this, _entries);
             return this;
         }
@@ -101,7 +109,7 @@ namespace RestLesser.OData
         /// Post a single entry, no need to call Set() before
         /// </summary>
         /// <param name="entry"></param>
-        public async Task<ODataUrlBuilder<TClass>> PostEntryAsync(TClass entry)
+        public async Task<ODataQuery<TClass>> PostEntryAsync(TClass entry)
         {
             await client.PostEntryAsync(this, entry);
             return this;
@@ -111,7 +119,7 @@ namespace RestLesser.OData
         /// Post a single entry, no need to call Set() before
         /// </summary>
         /// <param name="entry"></param>
-        public ODataUrlBuilder<TClass> PostEntry(TClass entry)
+        public ODataQuery<TClass> PostEntry(TClass entry)
         {
             client.PostEntry(this, entry);
             return this;
@@ -120,7 +128,7 @@ namespace RestLesser.OData
         /// <summary>
         /// Delete entries specified by this <see cref="ODataUrlBuilder{TClass}"/>
         /// </summary>
-        public async Task<ODataUrlBuilder<TClass>> DeleteEntriesAsync()
+        public async Task<ODataQuery<TClass>> DeleteEntriesAsync()
         {
             await client.DeleteEntriesAsync(this);
             return this;
@@ -129,9 +137,26 @@ namespace RestLesser.OData
         /// <summary>
         /// Delete entries specified by this <see cref="ODataUrlBuilder{TClass}"/>
         /// </summary>
-        public ODataUrlBuilder<TClass> DeleteEntries()
+        public ODataQuery<TClass> DeleteEntries()
         {
             client.DeleteEntries(this);
+            return this;
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task<ODataQuery<TClass>> PutValueAsync<TProperty>(Expression<Func<TClass, TProperty>> field, TProperty value)
+        {
+            ValidateEntries();
+            var entry = _entries[0];
+            var primaryKeys = PrimaryKey<TClass>.GetValue(entry);
+            var path = $"/{primaryKeys}/{field.GetMemberName()}/$value";
+            await client.PutAsync(Uri + path, value);
             return this;
         }
     }

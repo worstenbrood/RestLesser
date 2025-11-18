@@ -16,9 +16,19 @@ namespace RestLesser.OData.Attributes
         public static readonly Type Type = typeof(TClass);
 
         private static readonly Type _attributeKey = typeof(PrimaryKeyAttribute);
-        private static readonly MemberInfo[] _members = Type.GetMembers(BindingFlags.Instance | BindingFlags.Public)
-            .Where(m => Attribute.IsDefined(m, _attributeKey))
-            .ToArray();
+        private static MemberInfo[] GetMemberInfo()
+        {
+            var members = Type.GetMembers(BindingFlags.Instance | BindingFlags.Public)
+                .Where(m => Attribute.IsDefined(m, _attributeKey))
+                .ToArray();
+            if (members.Length == 0)
+            {
+                throw new ArgumentException($"No {_attributeKey.Name} attribute set in {Type.Name}");
+            }
+            return members;
+        }
+
+        private static readonly MemberInfo[] _members = GetMemberInfo();
 
         /// <summary>
         /// First primary key
