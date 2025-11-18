@@ -176,5 +176,24 @@ namespace RestLesser
         }
 
         #endregion
+        #region MemberInfo
+
+        /// <summary>
+        /// Get value for a certain member of a certain class
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <param name="memberInfo"></param>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public static object GetValue<TClass>(this MemberInfo memberInfo, TClass o) =>
+            memberInfo.MemberType switch
+            {
+                MemberTypes.Field => ((FieldInfo)memberInfo).GetValue(o),
+                MemberTypes.Property => ((PropertyInfo)memberInfo).GetValue(o),
+                _ => throw new NotImplementedException(),
+            };
+
+        #endregion
     }
 }
