@@ -1,12 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using RestLesser.Authentication;
 using RestLesser.DataAdapters;
 using RestLesser.OData.Attributes;
-using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace RestLesser.OData
 {
