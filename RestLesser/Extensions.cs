@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace RestLesser
 {
@@ -40,7 +41,7 @@ namespace RestLesser
         /// <param name="expressions"></param>
         /// <param name="separator"></param>
         /// <returns></returns>
-        public static string JoinMembers<TDelegate>(this Expression<TDelegate>[] expressions, string separator = Constants.Query.ParameterSeparator)
+        public static string JoinMembers<TDelegate>(this IEnumerable<Expression<TDelegate>> expressions, string separator = Constants.Query.ParameterSeparator)
             where TDelegate : class, Delegate
         {
             return string.Join(separator, expressions.Select(t => t.GetMemberName()));

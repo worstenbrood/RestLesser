@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using RestLesser.OData.Filter;
 using RestLesser.OData.Interfaces;
@@ -58,10 +60,10 @@ namespace RestLesser.OData
         /// <param name="key"></param>
         /// <param name="expressions"></param>
         /// <returns></returns>
-        protected ODataQueryBuilder<TClass> SetExpressions<TDelegate>(string key, Expression<TDelegate>[] expressions)
+        protected ODataQueryBuilder<TClass> SetExpressions<TDelegate>(string key, IList<Expression<TDelegate>> expressions)
             where TDelegate : class, Delegate
         {
-            if (expressions.Length > 0)
+            if (expressions.Count > 0)
             {
                 SetQueryParameter(key, expressions.JoinMembers());
             }
@@ -158,24 +160,39 @@ namespace RestLesser.OData
         }
 
         /// <summary>
-        /// Set field to order on (ascending)
+        /// Set the amount of records you want to skip
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="count"></param>
         /// <returns></returns>
-        public ODataQueryBuilder<TClass> OrderBy(Expression<Select<TClass>> field)
+        public ODataQueryBuilder<TClass> Skip(int count)
         {
-            SetQueryParameter(Constants.Query.OrderBy, field.GetMemberName());
+            if (count > 0)
+            {
+                SetQueryParameter(Constants.Query.Skip, count.ToString());
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Set fields to order on (ascending)
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
+        public ODataQueryBuilder<TClass> OrderBy(params Expression<Select<TClass>>[] fields)
+        {
+            SetExpressions(Constants.Query.OrderBy, fields);
             return this;
         }
 
         /// <summary>
         /// Set field to order on (descending)
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="fields"></param>
         /// <returns></returns>
-        public ODataQueryBuilder<TClass> OrderByDescending(Expression<Select<TClass>> field)
+        public ODataQueryBuilder<TClass> OrderByDescending(params Expression<Select<TClass>>[] fields)
         {
-            SetQueryParameter(Constants.Query.OrderBy, $"{field.GetMemberName()} {Constants.Query.Desc}");
+            var parameter = string.Join(Constants.Query.ParameterSeparator, fields.Select(x => $"{x.GetMemberName()} desc"));
+            SetQueryParameter(Constants.Query.OrderBy, parameter);
             return this;
         }
 

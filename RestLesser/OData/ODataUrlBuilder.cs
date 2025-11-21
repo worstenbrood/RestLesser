@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace RestLesser.OData
@@ -71,11 +72,20 @@ namespace RestLesser.OData
         }
 
         /// <summary>
+        /// Add $skip
+        /// </summary>
+        public ODataUrlBuilder<TClass> Skip(int count)
+        {
+            QueryBuilder.Skip(count);
+            return this;
+        }
+
+        /// <summary>
         /// Add $orderby (ascending)
         /// </summary>
-        public ODataUrlBuilder<TClass> OrderBy(Expression<Select<TClass>> field)
+        public ODataUrlBuilder<TClass> OrderBy(params Expression<Select<TClass>>[] fields)
         {
-            QueryBuilder.OrderBy(field);
+            QueryBuilder.OrderBy(fields);
             return this;
         }
 

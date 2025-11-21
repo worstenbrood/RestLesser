@@ -31,6 +31,11 @@
             public const string Top = "$top";
 
             /// <summary>
+            /// Top query parameter
+            /// </summary>
+            public const string Skip = "$skip";
+
+            /// <summary>
             /// Orderby query parameter
             /// </summary>
             public const string OrderBy = "$orderby";
