@@ -26,6 +26,7 @@ namespace RestLesser.OData
         /// <param name="builder">Url builder</param>
         /// <returns></returns>
         public async Task<TClass[]> GetEntriesAsync<TClass>(ODataUrlBuilder<TClass> builder)
+            where TClass: ODataObject
         {
             return await GetAsync<TClass[]>(builder.ToString());
         }
@@ -37,6 +38,7 @@ namespace RestLesser.OData
         /// <param name="builder"></param>
         /// <returns></returns>
         public TClass[] GetEntries<TClass>(ODataUrlBuilder<TClass> builder)
+            where TClass : ODataObject
         {
             return Get<TClass[]>(builder.ToString());
         }
@@ -49,6 +51,7 @@ namespace RestLesser.OData
         /// <param name="builder">Url builder</param>
         /// <returns></returns>
         public async Task<TClass> GetEntryAsync<TClass>(ODataUrlBuilder<TClass> builder)
+            where TClass : ODataObject
         {
             return (await GetEntriesAsync(builder)).FirstOrDefault();
         }
@@ -60,6 +63,7 @@ namespace RestLesser.OData
         /// <param name="builder"></param>
         /// <returns></returns>
         public TClass GetEntry<TClass>(ODataUrlBuilder<TClass> builder)
+            where TClass : ODataObject
         {
             return GetEntries(builder).FirstOrDefault();
         }
@@ -71,6 +75,7 @@ namespace RestLesser.OData
         /// <param name="builder"></param>
         /// <param name="entries"></param>
         public async Task PostEntriesAsync<TClass>(ODataUrlBuilder<TClass> builder, TClass[] entries)
+            where TClass : ODataObject
         {
             await PostAsync(builder.ToString(), entries);
         }
@@ -82,6 +87,7 @@ namespace RestLesser.OData
         /// <param name="builder"></param>
         /// <param name="entries"></param>
         public void PostEntries<TClass>(ODataUrlBuilder<TClass> builder, TClass[] entries)
+            where TClass : ODataObject
         {
             Post(builder.ToString(), entries);
         }
@@ -93,6 +99,7 @@ namespace RestLesser.OData
         /// <param name="builder"></param>
         /// <param name="entry"></param>
         public async Task PostEntryAsync<TClass>(ODataUrlBuilder<TClass> builder, TClass entry)
+            where TClass : ODataObject
         {
             await PostEntriesAsync(builder, [entry]);
         }
@@ -104,6 +111,7 @@ namespace RestLesser.OData
         /// <param name="builder"></param>
         /// <param name="entry"></param>
         public void PostEntry<TClass>(ODataUrlBuilder<TClass> builder, TClass entry)
+            where TClass : ODataObject
         {
             PostEntries(builder, [entry]);
         }
@@ -114,6 +122,7 @@ namespace RestLesser.OData
         /// <typeparam name="TClass"></typeparam>
         /// <param name="builder"></param>
         public async Task DeleteEntriesAsync<TClass>(ODataUrlBuilder<TClass> builder)
+            where TClass : ODataObject
         {
             await DeleteAsync(builder.ToString());
         }
@@ -124,6 +133,7 @@ namespace RestLesser.OData
         /// <typeparam name="TClass"></typeparam>
         /// <param name="builder"></param>
         public void DeleteEntries<TClass>(ODataUrlBuilder<TClass> builder)
+            where TClass : ODataObject
         {
             Delete(builder.ToString());
         }
@@ -138,6 +148,7 @@ namespace RestLesser.OData
         /// <param name="field"></param>
         /// <returns></returns>
         private static string BuildPutUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field)
+            where TClass : ODataObject
         {
             var primaryKeys = PrimaryKey<TClass>.GetValue(entry);
             return $"{builder}/{primaryKeys}/{field.GetMemberName()}/$value";
@@ -150,6 +161,7 @@ namespace RestLesser.OData
         /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
         public async Task PutValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value)
+            where TClass : ODataObject
         {
             var url = BuildPutUrl(builder, entry, field);
             await PutAsync(url, value);
@@ -162,6 +174,7 @@ namespace RestLesser.OData
         /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
         public void PutValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value)
+            where TClass : ODataObject
         {
             var url = BuildPutUrl(builder, entry, field);
             Put(url, value);
@@ -173,6 +186,6 @@ namespace RestLesser.OData
         /// <typeparam name="TClass"></typeparam>
         /// <param name="path"></param>
         /// <returns></returns>
-        public ODataUrlBuilder<TClass> Query<TClass>(string path) => new ODataQuery<TClass>(this, path);
+        public ODataUrlBuilder<TClass> Query<TClass>(string path) where TClass : ODataObject => new ODataQuery<TClass>(this, path);
     }
 }

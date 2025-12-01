@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using RestLesser.OData.Interfaces;
 
 namespace RestLesser.OData.Filter
