@@ -12,6 +12,6 @@ namespace RestLesser.OData.Models
         /// Data
         /// </summary>
         [JsonProperty("d")]
-        public Data<T> Data { get; set; }
+        public ODataCollection<T> Data { get; set; }
     }
 }

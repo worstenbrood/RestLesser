@@ -6,12 +6,12 @@ namespace RestLesser.OData.Models
     /// OData result data
     /// </summary>
     /// <typeparam name="T">Type of the result</typeparam>
-    public class Data<T>
+    public class ODataCollection<T>
     {
         /// <summary>
         /// Results
         /// </summary>
         [JsonProperty("results")]
-        public T Results { get; set; }
+        public T[] Results { get; set; }
     }
 }

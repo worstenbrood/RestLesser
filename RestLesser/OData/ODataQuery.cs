@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestLesser.OData.Interfaces;
+using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace RestLesser.OData
     /// <typeparam name="TClass"></typeparam>
     /// <param name="client"></param>
     /// <param name="path"></param>
-    public class ODataQuery<TClass>(ODataClient client, string path) : ODataUrlBuilder<TClass>(path)
+    public class ODataQuery<TClass>(IODataClient client, string path) : ODataUrlBuilder<TClass>(path)
     {
         private TClass[] _entries;
 
@@ -84,7 +85,6 @@ namespace RestLesser.OData
             await client.PostEntriesAsync(this, _entries);
             return this;
         }
-
         private void ValidateEntries()
         {
             if (_entries == null || _entries.Length == 0)
@@ -142,6 +142,7 @@ namespace RestLesser.OData
             return this;
         }
 
+        /*
         /// <summary>
         /// Put individual property
         /// </summary>
@@ -155,7 +156,9 @@ namespace RestLesser.OData
             await client.PutValueAsync(this, _entries[0], field, value);
             return this;
         }
+        */
 
+        /*
         /// <summary>
         /// Put individual property
         /// </summary>
@@ -169,5 +172,6 @@ namespace RestLesser.OData
             client.PutValue(this, _entries[0], field, value);
             return this;
         }
+        */
     }
 }

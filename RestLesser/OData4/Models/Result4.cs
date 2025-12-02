@@ -1,22 +1,22 @@
 ﻿using Newtonsoft.Json;
 
-namespace RestLesser.OData4
+namespace RestLesser.OData4.Models
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ODataObject4
+    public class Result4<T>
     {
         /// <summary>
-        /// 
+        /// OData context
         /// </summary>
         [JsonProperty("@odata.context")]
         public string ODataContext { get; set; }
 
         /// <summary>
-        /// 
+        /// value array
         /// </summary>
-        [JsonProperty("@odata.id")]
-        public string ODataId { get; set; }
+        [JsonProperty("value")]
+        public T[] Value { get; set; }
     }
 }
