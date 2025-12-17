@@ -18,23 +18,20 @@ namespace RestLesser.DataAdapters
         /// Namespaces used for writing
         /// </summary>
         public readonly XmlSerializerNamespaces Namespaces =
-            new ();
-                
+            new([new XmlQualifiedName(string.Empty, string.Empty)]);
+
         /// <inheritdoc/>
         public T Deserialize<T>(string data)
         {
-            var serializer = new XmlSerializer(typeof(T));
-            using (var reader = new StringReader(data))
-            {
-                return (T)serializer.Deserialize(reader);
-            }
+            using var reader = new StringReader(data);
+            return (T)Xml<T>.Serializer.Deserialize(reader);
         }
 
         /// <summary>
         /// XML writer settings
         /// </summary>
         protected static readonly XmlWriterSettings XmlWriterSettings =
-            new XmlWriterSettings
+            new ()
             {
                 OmitXmlDeclaration = true,
                 Indent = true,
@@ -45,19 +42,10 @@ namespace RestLesser.DataAdapters
         /// <inheritdoc/>
         public string Serialize<T>(T data)
         {
-            using (var stream = new StringWriter())
-            {
-                using (var writer = XmlWriter.Create(stream, XmlWriterSettings))
-                {
-                    var serializer = new XmlSerializer(typeof(T));
-                    if (Namespaces.Count == 0)
-                    {
-                       Namespaces.Add(string.Empty, string.Empty);
-                    }
-                    serializer.Serialize(writer, data, Namespaces);
-                    return stream.ToString();
-                }
-            }
+            using var stream = new StringWriter();
+            using var writer = XmlWriter.Create(stream, XmlWriterSettings);
+            Xml<T>.Serializer.Serialize(writer, data, Namespaces);
+            return stream.ToString();
         }
     }
 }
