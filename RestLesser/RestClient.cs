@@ -197,6 +197,17 @@ namespace RestLesser
         }
 
         /// <summary>
+        /// Get result from http message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected async Task GetResult(AuthenticationRequestMessage message)
+        {
+            using var result = await Client.SendAsync(message);
+            await HandleResponse(result);
+        }
+
+        /// <summary>
         /// Send async
         /// </summary>
         /// <typeparam name="TRes"></typeparam>
@@ -234,9 +245,7 @@ namespace RestLesser
             using var content = CreateContent<TReq>(data);
             using var message = CreateRequest(url, method);
             message.Content = content;
-
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            await HandleResponse(result);
+            await GetResult(message);
         }
 
         /// <summary>
@@ -370,7 +379,6 @@ namespace RestLesser
             using var message = CreateRequest(url, HttpMethod.Post);
             using var content = new FormUrlEncodedContent(parameters);
             message.Content = content;
-
             return await GetResult<TRes>(message);
         }
 
@@ -399,9 +407,7 @@ namespace RestLesser
             using var content = new StreamContent(input);
             multipart.Add(content);
             message.Content = multipart;
-
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            await HandleResponse(result);
+            await GetResult(message);
         }
 
         /// <summary>
@@ -449,12 +455,10 @@ namespace RestLesser
         public async Task<TRes> PostFileAsync<TRes>(string url, Stream input)
         {
             using var message = CreateRequest(url, HttpMethod.Post);
-            
             using var multipart = new MultipartFormDataContent();
             var content = new StreamContent(input);
             multipart.Add(content);
             message.Content = multipart;
-
             return await GetResult<TRes>(message);
         }
 
