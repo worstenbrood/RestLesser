@@ -7,8 +7,12 @@ namespace RestLesser.DataAdapters
     /// </summary>
     public static class AdapterFactory<T>
     {
-        private static readonly IDataAdapter PrimitiveAdapter = new PrimitiveAdapter();
-
+        private static readonly IDataAdapter PrimitiveAdapter =
+#if DEBUG
+            new DebugAdapter(new PrimitiveAdapter());
+#else
+        new PrimitiveAdapter();
+#endif
         /// <summary>
         /// Type of T
         /// </summary>

@@ -39,7 +39,11 @@ namespace RestLesser
         public RestClient(HttpMessageHandler handler = null, IDataAdapter dataAdapter = null)
         {
             Client = handler == null ? new HttpClient() : new HttpClient(handler);
+#if DEBUG
+            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+#else
             DataAdapter = dataAdapter ?? new JsonAdapter();
+#endif
         }
 
         /// <summary>
@@ -52,7 +56,11 @@ namespace RestLesser
         {
             Client = handler == null ? new HttpClient { BaseAddress = new Uri(endPoint) } :
                 new HttpClient(handler) { BaseAddress = new Uri(endPoint) };
+#if DEBUG
+            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+#else
             DataAdapter = dataAdapter ?? new JsonAdapter();
+#endif
         }
 
         /// <summary>
@@ -95,7 +103,11 @@ namespace RestLesser
             };
             Client = new HttpClient(handler) {BaseAddress = new Uri(endPoint)};
             Authentication = authentication;
+#if DEBUG
+            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+#else
             DataAdapter = dataAdapter ?? new JsonAdapter();
+#endif
         }
 
         /// <summary>
