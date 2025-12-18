@@ -167,8 +167,9 @@ namespace RestLesser
         {
             var adapter = GetAdapter<TRes>();
             message.Headers.Accept.Add(mediaType ?? adapter.MediaTypeHeader);
-            using var result = await Client.SendAsync(message);
-            return adapter.Deserialize<TRes>(await HandleResponse(result));
+            using var response = await Client.SendAsync(message);
+            var result = await HandleResponse(response);
+            return adapter.Deserialize<TRes>(result);
         }
 
         /// <summary>
