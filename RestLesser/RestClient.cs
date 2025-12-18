@@ -171,6 +171,32 @@ namespace RestLesser
             AdapterFactory<T>.Get(DataAdapter);
 
         /// <summary>
+        /// Create request content
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected RestContent<TReq> CreateContent<TReq>(TReq data)
+        {
+            var adapter = GetAdapter<TReq>();
+            return new RestContent<TReq>(data, adapter);
+        }
+
+        /// <summary>
+        /// Get result from http message
+        /// </summary>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected async Task<TRes> GetResult<TRes>(AuthenticationRequestMessage message)
+        {
+            var adapter = GetAdapter<TRes>();
+            message.Headers.Accept.Add(adapter.MediaTypeHeader);
+            using var result = await Client.SendAsync(message);
+            return adapter.Deserialize<TRes>(await HandleResponse(result));
+        }
+
+        /// <summary>
         /// Send async
         /// </summary>
         /// <typeparam name="TRes"></typeparam>
@@ -179,11 +205,8 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task<TRes> SendAsync<TRes>(string url, HttpMethod method)
         {
-            var adapter = GetAdapter<TRes>();
             using var message = CreateRequest(url, method);
-            message.Headers.Accept.Add(adapter.MediaTypeHeader);
-            using var result = await Client.SendAsync(message);
-            return adapter.Deserialize<TRes>(await HandleResponse(result));
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
@@ -208,8 +231,7 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task SendAsync<TReq>(string url, HttpMethod method, TReq data)
         {
-            var adapter = GetAdapter<TReq>();
-            using var content = new RestContent<TReq>(data, adapter);
+            using var content = CreateContent<TReq>(data);
             using var message = CreateRequest(url, method);
             message.Content = content;
 
@@ -242,16 +264,11 @@ namespace RestLesser
         {
             // Request
             using var message = CreateRequest(url, method);
-            var requestAdapter = GetAdapter<TReq>();
-            using var content = new RestContent<TReq>(data, requestAdapter);
+            using var content = CreateContent<TReq>(data);
             message.Content = content;
 
             // Response
-            var responseAdapter = GetAdapter<TRes>();
-            message.Headers.Accept.Add(responseAdapter.MediaTypeHeader);
-
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            return responseAdapter.Deserialize<TRes>(await HandleResponse(result));
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
@@ -350,15 +367,11 @@ namespace RestLesser
         /// <returns></returns>
         public async Task<TRes> PostAsync<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters)
         {
-            var adapter = GetAdapter<TRes>();
             using var message = CreateRequest(url, HttpMethod.Post);
-            message.Headers.Accept.Add(adapter.MediaTypeHeader);
-
             using var content = new FormUrlEncodedContent(parameters);
             message.Content = content;
 
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            return adapter.Deserialize<TRes>(await HandleResponse(result));
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
@@ -435,17 +448,14 @@ namespace RestLesser
         /// <exception cref="HttpRequestException"></exception>
         public async Task<TRes> PostFileAsync<TRes>(string url, Stream input)
         {
-            var adapter = GetAdapter<TRes>();
             using var message = CreateRequest(url, HttpMethod.Post);
-            message.Headers.Accept.Add(adapter.MediaTypeHeader);
-
+            
             using var multipart = new MultipartFormDataContent();
             var content = new StreamContent(input);
             multipart.Add(content);
             message.Content = multipart;
 
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            return adapter.Deserialize<TRes>(await HandleResponse(result));
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
