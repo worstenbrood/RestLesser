@@ -161,11 +161,12 @@ namespace RestLesser
         /// </summary>
         /// <typeparam name="TRes"></typeparam>
         /// <param name="message"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        protected async Task<TRes> GetResult<TRes>(AuthenticationRequestMessage message)
+        protected async Task<TRes> GetResult<TRes>(AuthenticationRequestMessage message, MediaTypeWithQualityHeaderValue mediaType = null)
         {
             var adapter = GetAdapter<TRes>();
-            message.Headers.Accept.Add(adapter.MediaTypeHeader);
+            message.Headers.Accept.Add(mediaType ?? adapter.MediaTypeHeader);
             using var result = await Client.SendAsync(message);
             return adapter.Deserialize<TRes>(await HandleResponse(result));
         }
@@ -186,14 +187,14 @@ namespace RestLesser
         /// </summary>
         /// <param name="url"></param>
         /// <param name="method"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        protected async Task SendAsync(string url, HttpMethod method)
+        protected async Task SendAsync(string url, HttpMethod method, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
             using var message = CreateRequest(url, method);
-            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
-
-            using var result = await Client.SendAsync(message);
-            await HandleResponse(result);
+            message.Headers.Accept.Add(mediaType ?? DataAdapter.MediaTypeHeader);
+            await GetResult(message);
         }
 
         /// <summary>
@@ -201,11 +202,13 @@ namespace RestLesser
         /// </summary>
         /// <param name="url"></param>
         /// <param name="method"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        protected void Send(string url, HttpMethod method)
+        protected void Send(string url, HttpMethod method, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            SendAsync(url, method).Sync();
-        }      
+            SendAsync(url, method, mediaType).Sync();
+        }
 
         /// <summary>
         /// Send async
@@ -213,11 +216,13 @@ namespace RestLesser
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url"></param>
         /// <param name="method"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        protected async Task<TRes> SendAsync<TRes>(string url, HttpMethod method)
+        protected async Task<TRes> SendAsync<TRes>(string url, HttpMethod method, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
             using var message = CreateRequest(url, method);
-            return await GetResult<TRes>(message);
+            return await GetResult<TRes>(message, mediaType);
         }
 
         /// <summary>
@@ -226,10 +231,12 @@ namespace RestLesser
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url"></param>
         /// <param name="method"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        protected TRes Send<TRes>(string url, HttpMethod method)
+        protected TRes Send<TRes>(string url, HttpMethod method, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return SendAsync<TRes>(url, method).Sync();
+            return SendAsync<TRes>(url, method, mediaType).Sync();
         }
 
         /// <summary>
@@ -242,7 +249,7 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task SendAsync<TReq>(string url, HttpMethod method, TReq data)
         {
-            using var content = CreateContent<TReq>(data);
+            using var content = CreateContent(data);
             using var message = CreateRequest(url, method);
             message.Content = content;
             await GetResult(message);
@@ -268,16 +275,18 @@ namespace RestLesser
         /// <param name="url"></param>
         /// <param name="method"></param>
         /// <param name="data"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        protected async Task<TRes> SendAsync<TReq, TRes>(string url, HttpMethod method, TReq data)
+        protected async Task<TRes> SendAsync<TReq, TRes>(string url, HttpMethod method, 
+            TReq data, MediaTypeWithQualityHeaderValue mediaType = null)
         {
             // Request
             using var message = CreateRequest(url, method);
-            using var content = CreateContent<TReq>(data);
+            using var content = CreateContent(data);
             message.Content = content;
 
             // Response
-            return await GetResult<TRes>(message);
+            return await GetResult<TRes>(message, mediaType);
         }
 
         /// <summary>
@@ -288,10 +297,12 @@ namespace RestLesser
         /// <param name="url"></param>
         /// <param name="method"></param>
         /// <param name="data"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        protected TRes Send<TReq, TRes>(string url, HttpMethod method, TReq data)
+        protected TRes Send<TReq, TRes>(string url, HttpMethod method, TReq data, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return SendAsync<TReq, TRes>(url, method, data).Sync();
+            return SendAsync<TReq, TRes>(url, method, data, mediaType).Sync();
         }
 
         /// <summary>
@@ -299,11 +310,13 @@ namespace RestLesser
         /// </summary>
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url">Url</param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task<TRes> GetAsync<TRes>(string url)
+        public async Task<TRes> GetAsync<TRes>(string url, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return await SendAsync<TRes>(url, HttpMethod.Get);
+            return await SendAsync<TRes>(url, HttpMethod.Get, mediaType);
         }
 
         /// <summary>
@@ -311,10 +324,12 @@ namespace RestLesser
         /// </summary>
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        public TRes Get<TRes>(string url)
+        public TRes Get<TRes>(string url, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return GetAsync<TRes>(url).Sync();
+            return GetAsync<TRes>(url, mediaType).Sync();
         }
 
         /// <summary>
@@ -347,11 +362,13 @@ namespace RestLesser
         /// <typeparam name="TRes">Type of the object that will be deserialized from the response</typeparam>
         /// <param name="url">Url</param>
         /// <param name="data">Body object</param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task<TRes> PostAsync<TReq, TRes>(string url, TReq data)
+        public async Task<TRes> PostAsync<TReq, TRes>(string url, TReq data,
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return await SendAsync<TReq, TRes>(url, HttpMethod.Post, data);
+            return await SendAsync<TReq, TRes>(url, HttpMethod.Post, data, mediaType);
         }
 
         /// <summary>
@@ -361,10 +378,12 @@ namespace RestLesser
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url"></param>
         /// <param name="data"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        public TRes Post<TReq, TRes>(string url, TReq data)
+        public TRes Post<TReq, TRes>(string url, TReq data,
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return PostAsync<TReq, TRes>(url, data).Sync();
+            return PostAsync<TReq, TRes>(url, data, mediaType).Sync();
         }
 
         /// <summary>
@@ -373,13 +392,15 @@ namespace RestLesser
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url"></param>
         /// <param name="parameters"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        public async Task<TRes> PostAsync<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters)
+        public async Task<TRes> PostAsync<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
             using var message = CreateRequest(url, HttpMethod.Post);
             using var content = new FormUrlEncodedContent(parameters);
             message.Content = content;
-            return await GetResult<TRes>(message);
+            return await GetResult<TRes>(message, mediaType);
         }
 
         /// <summary>
@@ -388,10 +409,12 @@ namespace RestLesser
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url"></param>
         /// <param name="parameters"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        public TRes Post<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters)
+        public TRes Post<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters,
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return PostAsync<TRes>(url, parameters).Sync();
+            return PostAsync<TRes>(url, parameters, mediaType).Sync();
         }
 
         /// <summary>
@@ -450,16 +473,18 @@ namespace RestLesser
         /// <typeparam name="TRes">Type of the object that will be deserialized from the response</typeparam>
         /// <param name="url">Url</param>
         /// <param name="input">Input stream</param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task<TRes> PostFileAsync<TRes>(string url, Stream input)
+        public async Task<TRes> PostFileAsync<TRes>(string url, Stream input, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
             using var message = CreateRequest(url, HttpMethod.Post);
             using var multipart = new MultipartFormDataContent();
             var content = new StreamContent(input);
             multipart.Add(content);
             message.Content = multipart;
-            return await GetResult<TRes>(message);
+            return await GetResult<TRes>(message, mediaType);
         }
 
         /// <summary>
@@ -468,12 +493,14 @@ namespace RestLesser
         /// <typeparam name="TRes">Type of the object that will be deserialized from the response</typeparam>
         /// <param name="url">Url</param>
         /// <param name="path">Full path to input file</param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
         /// <exception cref="HttpRequestException"></exception>
-        public async Task<TRes> PostFileAsync<TRes>(string url, string path)
+        public async Task<TRes> PostFileAsync<TRes>(string url, string path, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
             using var file = File.OpenRead(path);
-            return await PostFileAsync<TRes>(url, file);
+            return await PostFileAsync<TRes>(url, file, mediaType);
         }
 
         /// <summary>
@@ -482,10 +509,12 @@ namespace RestLesser
         /// <typeparam name="TRes"></typeparam>
         /// <param name="url"></param>
         /// <param name="path"></param>
+        /// <param name="mediaType"></param>
         /// <returns></returns>
-        public TRes PostFile<TRes>(string url, string path)
+        public TRes PostFile<TRes>(string url, string path, 
+            MediaTypeWithQualityHeaderValue mediaType = null)
         {
-            return PostFileAsync<TRes>(url, path).Sync();
+            return PostFileAsync<TRes>(url, path, mediaType).Sync();
         }
 
         /// <summary>
