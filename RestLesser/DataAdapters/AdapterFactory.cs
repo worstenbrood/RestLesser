@@ -16,7 +16,7 @@ namespace RestLesser.DataAdapters
         /// <summary>
         /// Type of T
         /// </summary>
-        public static readonly Type Type = typeof(T);
+        public static readonly TypeCode TypeCode = System.Type.GetTypeCode(typeof(T));
 
         /// <summary>
         /// Return correct adapter based on type
@@ -24,7 +24,7 @@ namespace RestLesser.DataAdapters
         /// <param name="supplied"></param>
         /// <returns></returns>
         public static IDataAdapter Get(IDataAdapter supplied) =>
-            Type.IsPrimitive || Type == typeof(string) ?
+            TypeCode != TypeCode.Object ?
                 // Use the primitive adapter
                 PrimitiveAdapter :
                 // Use the supplied adapter
