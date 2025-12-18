@@ -1,4 +1,6 @@
-﻿using RestLesser.Examples.TvMaze;
+﻿using Newtonsoft.Json;
+using RestLesser.DataAdapters;
+using RestLesser.Examples.TvMaze;
 
 namespace RestLesser.Examples
 {
@@ -6,12 +8,13 @@ namespace RestLesser.Examples
     {
         public static void Main(params string[] args)
         {
+            var json = new JsonAdapter();
+            // Pretty print
+            json.SerializerSettings.Formatting = Formatting.Indented;
+
             var tvMaze = new TvMazeClient();
-            var results = tvMaze.SearchShow("Pluribus");
-            foreach (var result in results)
-            {
-                Console.WriteLine($"Name: {result.Show?.Name}");
-            }
+            var results = tvMaze.SearchShow("Walking Dead");
+            Console.WriteLine(json.Serialize(results));
         }
     }
 }

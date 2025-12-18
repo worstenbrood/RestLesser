@@ -39,7 +39,11 @@ namespace RestLesser
         public RestClient(HttpMessageHandler handler = null, IDataAdapter dataAdapter = null)
         {
             Client = handler == null ? new HttpClient() : new HttpClient(handler);
+#if DEBUG
+            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+#else
             DataAdapter = dataAdapter ?? new JsonAdapter();
+#endif
         }
 
         /// <summary>
@@ -52,7 +56,11 @@ namespace RestLesser
         {
             Client = handler == null ? new HttpClient { BaseAddress = new Uri(endPoint) } :
                 new HttpClient(handler) { BaseAddress = new Uri(endPoint) };
+#if DEBUG
+            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+#else
             DataAdapter = dataAdapter ?? new JsonAdapter();
+#endif
         }
 
         /// <summary>
@@ -95,7 +103,11 @@ namespace RestLesser
             };
             Client = new HttpClient(handler) {BaseAddress = new Uri(endPoint)};
             Authentication = authentication;
+#if DEBUG
+            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+#else
             DataAdapter = dataAdapter ?? new JsonAdapter();
+#endif
         }
 
         /// <summary>
@@ -125,6 +137,51 @@ namespace RestLesser
             new (method, url, Authentication);
 
         /// <summary>
+        /// Get data adaptor for type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        protected IDataAdapter GetAdapter<T>() =>
+            AdapterFactory<T>.Get(DataAdapter);
+
+        /// <summary>
+        /// Create request content
+        /// </summary>
+        /// <typeparam name="TReq"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected RestContent<TReq> CreateContent<TReq>(TReq data)
+        {
+            var adapter = GetAdapter<TReq>();
+            return new RestContent<TReq>(data, adapter);
+        }
+
+        /// <summary>
+        /// Get result from http message
+        /// </summary>
+        /// <typeparam name="TRes"></typeparam>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected async Task<TRes> GetResult<TRes>(AuthenticationRequestMessage message)
+        {
+            var adapter = GetAdapter<TRes>();
+            message.Headers.Accept.Add(adapter.MediaTypeHeader);
+            using var result = await Client.SendAsync(message);
+            return adapter.Deserialize<TRes>(await HandleResponse(result));
+        }
+
+        /// <summary>
+        /// Get result from http message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected async Task GetResult(AuthenticationRequestMessage message)
+        {
+            using var result = await Client.SendAsync(message);
+            await HandleResponse(result);
+        }
+
+        /// <summary>
         /// Send async
         /// </summary>
         /// <param name="url"></param>
@@ -148,7 +205,7 @@ namespace RestLesser
         protected void Send(string url, HttpMethod method)
         {
             SendAsync(url, method).Sync();
-        }
+        }      
 
         /// <summary>
         /// Send async
@@ -160,10 +217,7 @@ namespace RestLesser
         protected async Task<TRes> SendAsync<TRes>(string url, HttpMethod method)
         {
             using var message = CreateRequest(url, method);
-            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
-
-            using var result = await Client.SendAsync(message);
-            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
@@ -188,12 +242,10 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task SendAsync<TReq>(string url, HttpMethod method, TReq data)
         {
+            using var content = CreateContent<TReq>(data);
             using var message = CreateRequest(url, method);
-            using var content = new RestContent<TReq>(data, DataAdapter);
             message.Content = content;
-
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            await HandleResponse(result);
+            await GetResult(message);
         }
 
         /// <summary>
@@ -219,14 +271,13 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task<TRes> SendAsync<TReq, TRes>(string url, HttpMethod method, TReq data)
         {
+            // Request
             using var message = CreateRequest(url, method);
-            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
-
-            using var content = new RestContent<TReq>(data, DataAdapter);
+            using var content = CreateContent<TReq>(data);
             message.Content = content;
 
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
+            // Response
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
@@ -326,13 +377,9 @@ namespace RestLesser
         public async Task<TRes> PostAsync<TRes>(string url, IEnumerable<KeyValuePair<string, string>> parameters)
         {
             using var message = CreateRequest(url, HttpMethod.Post);
-            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
-
             using var content = new FormUrlEncodedContent(parameters);
             message.Content = content;
-
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
@@ -360,9 +407,7 @@ namespace RestLesser
             using var content = new StreamContent(input);
             multipart.Add(content);
             message.Content = multipart;
-
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            await HandleResponse(result);
+            await GetResult(message);
         }
 
         /// <summary>
@@ -410,15 +455,11 @@ namespace RestLesser
         public async Task<TRes> PostFileAsync<TRes>(string url, Stream input)
         {
             using var message = CreateRequest(url, HttpMethod.Post);
-            message.Headers.Accept.Add(DataAdapter.MediaTypeHeader);
-
             using var multipart = new MultipartFormDataContent();
             var content = new StreamContent(input);
             multipart.Add(content);
             message.Content = multipart;
-
-            using HttpResponseMessage result = await Client.SendAsync(message);
-            return DataAdapter.Deserialize<TRes>(await HandleResponse(result));
+            return await GetResult<TRes>(message);
         }
 
         /// <summary>
