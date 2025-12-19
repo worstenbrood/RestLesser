@@ -3,29 +3,52 @@ using System.Net.Http.Headers;
 
 namespace RestLesser.Examples.TeamCity
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TeamCityAuthentication : IAuthentication
     {
         private readonly HttpClient _client;
 
-        private readonly string _token;
+        protected readonly IAuthentication? Authentication;
 
-        public TeamCityAuthentication(string url, string token)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        private TeamCityAuthentication(string url)
         {
-            _token = token;
             _client = new HttpClient
             {
                 BaseAddress = new Uri(url),
-                DefaultRequestHeaders = 
-                {
-                    Authorization = new AuthenticationHeaderValue("Basic", _token)
-                }
             };
+        }
+
+        /// <summary>
+        /// Token auth
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="token"></param>
+        public TeamCityAuthentication(string url, string token) : this(url)
+        {
+            Authentication = new TokenAuthentication(token);
+        }
+
+        /// <summary>
+        /// Token auth
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="token"></param>
+        public TeamCityAuthentication(string url, string username, string password) : this(url)
+        {
+            Authentication = new BasicAuthentication(username, password);
         }
 
         private string GetToken()
         {
             const string path = "authenticationTest.html?csrf";
             using var request = new HttpRequestMessage(HttpMethod.Get, path);
+            Authentication?.SetAuthentication(request);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
             using HttpResponseMessage response = _client.SendAsync(request).Sync();
             return response.Content.ReadAsStringAsync().Sync();
@@ -33,8 +56,11 @@ namespace RestLesser.Examples.TeamCity
 
         public void SetAuthentication(HttpRequestMessage request)
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", _token);
-            request.Headers.Add("X-TC-CSRF-Token", GetToken());
+            // Set authentication
+            Authentication?.SetAuthentication(request);
+
+            // Set csrf token
+            request.SetHeader("X-TC-CSRF-Token", GetToken());
         }
     }
 }
