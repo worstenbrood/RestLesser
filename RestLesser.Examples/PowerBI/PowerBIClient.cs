@@ -5,18 +5,14 @@ using RestLesser.Examples.PowerBI.Models;
 namespace RestLesser.Examples.PowerBI
 {
     /// <summary>
-    /// PoerBI api client
+    /// PowerBI api client
     /// </summary>
-    public class PowerBIClient : RestClient
+    /// <remarks>
+    /// PowerBI REST Client
+    /// </remarks>
+    /// <param name="token">Token provider</param>
+    public class PowerBIClient(IAuthentication authentication) : RestClient("https://api.powerbi.com", authentication)
     {
-        /// <summary>
-        /// PowerBI REST Client
-        /// </summary>
-        /// <param name="token">Token provider</param>
-        public PowerBIClient(IAuthentication authentication) : base("https://api.powerbi.com", authentication)
-        {
-        }
-
         /// <summary>
         /// Get Report by guid
         /// </summary>
@@ -282,11 +278,11 @@ namespace RestLesser.Examples.PowerBI
         {
             var credentials = new Credentials
             {
-                CredentialData = new[]
-                {
+                CredentialData =
+                [
                     new NameValue("username", username),
                     new NameValue("password", password)
-                }
+                ]
             };
 
             var credentialDetails = new CredentialDetails
@@ -325,7 +321,7 @@ namespace RestLesser.Examples.PowerBI
         /// <param name="format">File format</param>
         /// <param name="group">Workspace or null for own workspace</param>
         /// <returns>Export</returns>
-        public Models.Export ExportToFile(Report report, FileFormat format, Group group)
+        public Export ExportToFile(Report report, FileFormat format, Group group)
         {
             var url = group == null ? $"/v1.0/myorg/reports/{report.Id}/ExportTo" :
                 $"/v1.0/myorg/groups/{group.Id}/reports/{report.Id}/ExportTo";
@@ -335,7 +331,7 @@ namespace RestLesser.Examples.PowerBI
                 FileFormat = format
             };
 
-            return Post<ExportRequest, Models.Export>(url, exportRequest);
+            return Post<ExportRequest, Export>(url, exportRequest);
         }
 
         /// <summary>
@@ -345,12 +341,12 @@ namespace RestLesser.Examples.PowerBI
         /// <param name="export">Export</param>
         /// <param name="group">Workspace or null for own workspace</param>
         /// <returns></returns>
-        public Models.Export GetExport(Report report, Models.Export export, Group group)
+        public Export GetExport(Report report, Export export, Group group)
         {
             var url = group == null ? $"/v1.0/myorg/reports/{report.Id}/exports/{export.Id}" :
                 $"/v1.0/myorg/groups/{group.Id}/reports/{report.Id}/exports/{export.Id}";
 
-            return Get<Models.Export>(url);
+            return Get<Export>(url);
         }
 
         /// <summary>
@@ -361,7 +357,7 @@ namespace RestLesser.Examples.PowerBI
         /// <param name="path">Full path of local file</param>
         /// <param name="mediatype">Media type</param>
         /// <param name="group">Workspace or null for onw workspace</param>
-        public void GetExportFile(Report report, Models.Export export, string path, string mediatype, Group group)
+        public void GetExportFile(Report report, Export export, string path, string mediatype, Group group)
         {
             var url = group == null ? $"/v1.0/myorg/reports/{report.Id}/exports/{export.Id}/file" : 
                 $"/v1.0/myorg/groups/{group.Id}/reports/{report.Id}/exports/{export.Id}/file";
