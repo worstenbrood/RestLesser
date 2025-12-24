@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ExactOnline\" />
     <Folder Include="PowerBI\" />
     <Folder Include="TeamCity\" />
   </ItemGroup>
