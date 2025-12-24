@@ -25,11 +25,12 @@ namespace RestLesser.Examples.TeamCity
         /// <summary>
         /// Trigger a <see cref="Build"/>
         /// </summary>
-        /// <param name="build"></param>
-        /// <returns></returns>
-        public Build TriggerBuild(Build build)
+        /// <param name="build"><see cref="Build"/> to trigger</param>
+        /// <param name="moveToTop">Move the build to the top of the queue</param>
+        /// <returns><see cref="Build"/>Updated build</returns>
+        public Build TriggerBuild(Build build, bool moveToTop = true)
         {
-            return Post<Build, Build>("httpAuth/app/rest/buildQueue?moveToTop=true", build);
+            return Post<Build, Build>($"httpAuth/app/rest/buildQueue?moveToTop={moveToTop.ToString().ToLower()}", build);
         }
 
         /// <summary>
@@ -39,8 +40,7 @@ namespace RestLesser.Examples.TeamCity
         /// <returns></returns>
         public Build FetchBuild(int id)
         {
-            string path = string.Format("httpAuth/app/rest/builds/id:{0}", id);
-            return Get<Build>(path);       
+            return Get<Build>($"httpAuth/app/rest/builds/id:{id}");       
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace RestLesser.Examples.TeamCity
         /// <param name="artifact"></param>
         /// <param name="accept"></param>
         /// <param name="output"></param>
-        public void FetchTextArtifact(int id, string artifact, string accept, Stream output)
+        public void FetchArtifact(int id, string artifact, string accept, Stream output)
         {
             GetFile($"httpAuth/app/rest/builds/id:{id}/artifacts/content/{artifact}", output, accept);
         }
@@ -75,7 +75,7 @@ namespace RestLesser.Examples.TeamCity
         public void GetLatestArtifact(string buildType, string artifact, string accept, Stream output)
         {
             var buildId = GetLatestBuildId(buildType);
-            FetchTextArtifact(buildId, artifact, accept, output);
+            FetchArtifact(buildId, artifact, accept, output);
         }
 
         /// <summary>
@@ -88,9 +88,8 @@ namespace RestLesser.Examples.TeamCity
         /// <returns></returns>
         public MemoryStream GetLatestArtifact(string buildType, string artifact, string accept)
         {
-            var buildId = GetLatestBuildId(buildType);
             var output = new MemoryStream();
-            FetchTextArtifact(buildId, artifact, accept, output);
+            GetLatestArtifact(buildType, artifact, accept, output);
             return output;
         }
     }
