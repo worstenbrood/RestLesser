@@ -1,12 +1,21 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using RestLesser.Authentication;
 using RestLesser.Examples.ExactOnline.Models;
 using RestLesser.OData;
 
 namespace RestLesser.Examples.ExactOnline
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ExactApiClient : ExactClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="authentication"></param>
         public ExactApiClient(IAuthentication authentication) : base(authentication)
         {
             // Get the AccountingDivision for the current user,
@@ -14,6 +23,11 @@ namespace RestLesser.Examples.ExactOnline
             AccountingDivision = GetCurrentUser(m => m.AccountingDivision)?.AccountingDivision;
         }
        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public Me? GetCurrentUser(params Expression<Select<Me>>[] selectors)
         {
             var url = GetUrl("current/Me", true);
@@ -28,6 +42,12 @@ namespace RestLesser.Examples.ExactOnline
         /// </summary>
         public ODataUrlBuilder<PurchaseEntry> PurchaseEntries => Query<PurchaseEntry>(GetUrl("purchaseentry/PurchaseEntries"));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public PurchaseEntry? GetPurchaseEntryByDocument(Guid? document, params Expression<Select<PurchaseEntry>>[] selectors)
         {
             return PurchaseEntries
@@ -37,6 +57,11 @@ namespace RestLesser.Examples.ExactOnline
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public PurchaseEntry[] GetPurchaseEntries(params Expression<Select<PurchaseEntry>>[] selectors)
         {
             return PurchaseEntries
@@ -49,6 +74,11 @@ namespace RestLesser.Examples.ExactOnline
         /// </summary>
         public ODataUrlBuilder<Document> Documents => Query<Document>(GetUrl("documents/Documents"));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public Document[] GetDocuments(params Expression<Select<Document>>[] selectors)
         {
             return Documents
@@ -56,6 +86,12 @@ namespace RestLesser.Examples.ExactOnline
                 .GetEntries();
         }      
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public Document? GetDocument(Guid guid, params Expression<Select<Document>>[] selectors)
         {
             return Documents
@@ -86,6 +122,12 @@ namespace RestLesser.Examples.ExactOnline
         /// </summary>
         public ODataUrlBuilder<DocumentAttachment> DocumentAttachments => Query<DocumentAttachment>(GetUrl("documents/DocumentAttachments"));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public DocumentAttachment[] GetDocumentAttachments(long? timestamp, params Expression<Select<DocumentAttachment>>[] selectors)
         {
             return DocumentAttachments
@@ -94,6 +136,12 @@ namespace RestLesser.Examples.ExactOnline
                 .GetEntries();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public DocumentAttachment? GetDocumentAttachmentByDocument(Guid document, params Expression<Select<DocumentAttachment>>[] selectors)
         {
             return DocumentAttachments
@@ -108,6 +156,11 @@ namespace RestLesser.Examples.ExactOnline
         /// </summary>
         public ODataUrlBuilder<DocumentType> DocumentTypes => Query<DocumentType>(GetUrl("documents/DocumentTypes"));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public DocumentType[] GetDocumentTypes(params Expression<Select<DocumentType>>[] selectors)
         {
             return DocumentTypes
@@ -115,6 +168,12 @@ namespace RestLesser.Examples.ExactOnline
                 .GetEntries();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="selectors"></param>
+        /// <returns></returns>
         public DocumentType? GetDocumentTypeById(int? id, params Expression<Select<DocumentType>>[] selectors)
         {
             return DocumentTypes
@@ -124,12 +183,21 @@ namespace RestLesser.Examples.ExactOnline
                 .FirstOrDefault();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ODataUrlBuilder<SyncDocument> SyncDocuments =>
            Query<SyncDocument>(GetUrl("sync/Documents/Documents"));
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ODataUrlBuilder<PurchaseInvoice> PurchaseInvoices =>
            Query<PurchaseInvoice>(GetUrl("purchase/PurchaseInvoices"));
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ODataUrlBuilder<Account> Accounts =>
           Query<Account>(GetUrl("crm/Accounts"));
     }

@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using RestLesser.Authentication;
 using RestLesser.DataAdapters;
 using RestLesser.Examples.TeamCity.Models;
@@ -13,7 +16,7 @@ namespace RestLesser.Examples.TeamCity
                 CookieContainer = new CookieContainer(),
                 UseCookies = true
             },
-            new XmlAdapter())
+            AdapterFactory.Get(Adapter.Xml))
         {
             Client.Timeout = TimeSpan.FromMinutes(5.0);
         }

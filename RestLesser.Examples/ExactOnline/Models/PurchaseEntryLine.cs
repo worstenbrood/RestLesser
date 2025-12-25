@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RestLesser.OData;
+using System;
 
 namespace RestLesser.Examples.ExactOnline.Models
 {

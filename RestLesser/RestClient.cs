@@ -40,9 +40,9 @@ namespace RestLesser
         {
             Client = handler == null ? new HttpClient() : new HttpClient(handler);
 #if DEBUG
-            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+            DataAdapter = new DebugAdapter(dataAdapter ?? AdapterFactory.Get(Adapter.Default));
 #else
-            DataAdapter = dataAdapter ?? new JsonAdapter();
+            DataAdapter = dataAdapter ?? AdapterFactory.Get(Adapter.Default);
 #endif
         }
 
@@ -57,9 +57,9 @@ namespace RestLesser
             Client = handler == null ? new HttpClient { BaseAddress = new Uri(endPoint) } :
                 new HttpClient(handler) { BaseAddress = new Uri(endPoint) };
 #if DEBUG
-            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+            DataAdapter = new DebugAdapter(dataAdapter ?? AdapterFactory.Get(Adapter.Default));
 #else
-            DataAdapter = dataAdapter ?? new JsonAdapter();
+            DataAdapter = dataAdapter ?? AdapterFactory.Get(Adapter.Default);
 #endif
         }
 
@@ -104,9 +104,9 @@ namespace RestLesser
             Client = new HttpClient(handler) {BaseAddress = new Uri(endPoint)};
             Authentication = authentication;
 #if DEBUG
-            DataAdapter = new DebugAdapter(dataAdapter ?? new JsonAdapter());
+            DataAdapter = new DebugAdapter(dataAdapter ?? AdapterFactory.Get(Adapter.Default));
 #else
-            DataAdapter = dataAdapter ?? new JsonAdapter();
+            DataAdapter = dataAdapter ?? AdapterFactory.Get(Adapter.Default);
 #endif
         }
 
@@ -145,15 +145,22 @@ namespace RestLesser
             AdapterFactory<T>.Get(DataAdapter);
 
         /// <summary>
-        /// Create request content
+        /// Create request rest content
         /// </summary>
         /// <typeparam name="TReq"></typeparam>
+        /// <param name="message"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        protected RestContent<TReq> CreateContent<TReq>(TReq data)
+        protected RestContent<TReq> CreateRestContent<TReq>(
+            AuthenticationRequestMessage message,
+            TReq data)
         {
             var adapter = GetAdapter<TReq>();
-            return new RestContent<TReq>(data, adapter);
+            var content = new RestContent<TReq>(data, adapter);
+            
+            // Set message content
+            message.Content = content;
+            return content;
         }
 
         /// <summary>
@@ -250,9 +257,8 @@ namespace RestLesser
         /// <returns></returns>
         protected async Task SendAsync<TReq>(string url, HttpMethod method, TReq data)
         {
-            using var content = CreateContent(data);
             using var message = CreateRequest(url, method);
-            message.Content = content;
+            using var _ = CreateRestContent(message, data);
             await GetResult(message);
         }
 
@@ -283,9 +289,8 @@ namespace RestLesser
         {
             // Request
             using var message = CreateRequest(url, method);
-            using var content = CreateContent(data);
-            message.Content = content;
-
+            using var _ = CreateRestContent(message, data);
+            
             // Response
             return await GetResult<TRes>(message, mediaType);
         }

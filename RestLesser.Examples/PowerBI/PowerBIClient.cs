@@ -1,16 +1,15 @@
 ﻿using Newtonsoft.Json;
 using RestLesser.Authentication;
 using RestLesser.Examples.PowerBI.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RestLesser.Examples.PowerBI
 {
-    /// <summary>
-    /// PowerBI api client
-    /// </summary>
     /// <remarks>
     /// PowerBI REST Client
     /// </remarks>
-    /// <param name="token">Token provider</param>
+    /// <param name="authentication"></param>
     public class PowerBIClient(IAuthentication authentication) : RestClient("https://api.powerbi.com", authentication)
     {
         /// <summary>
@@ -75,6 +74,7 @@ namespace RestLesser.Examples.PowerBI
         /// </summary>
         /// <param name="dataset">Dataset id</param>
         /// <param name="notifyOption">NotifyOption</param>
+        /// <param name="group"></param>
         public void RefreshDataset(Dataset dataset, NotifyOption notifyOption, Group group)
         {
             var url = group == null ? $"/v1.0/myorg/datasets/{dataset.Id}/refreshes" :
@@ -180,6 +180,7 @@ namespace RestLesser.Examples.PowerBI
         /// Post a pbix file to a group
         /// </summary>
         /// <param name="group">Workspace or null for own workspace</param>
+        /// <param name="conflictMode"></param>
         /// <param name="name">Name of dataset</param>
         /// <param name="path">Full path to the file</param>
         /// <returns></returns>

@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace RestLesser.DataAdapters
+namespace RestLesser.Serialization
 {
     /// <summary>
     /// Generic static <see cref="XmlSerializer"/> cache

@@ -1,4 +1,5 @@
 ﻿using RestLesser.OData;
+using System;
 
 namespace RestLesser.Examples.ExactOnline.Models
 {
@@ -198,6 +199,9 @@ namespace RestLesser.Examples.ExactOnline.Models
     /// </summary>
     public class SyncDocument : Document
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public long Timestamp { get; set; }
     }
 }

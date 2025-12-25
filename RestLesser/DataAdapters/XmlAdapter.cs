@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using RestLesser.Serialization;
+using System.Net.Http.Headers;
 using System.Xml;
 using System.Xml.Serialization;
 

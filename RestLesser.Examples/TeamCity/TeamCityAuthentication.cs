@@ -1,4 +1,6 @@
 ﻿using RestLesser.Authentication;
+using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace RestLesser.Examples.TeamCity
@@ -38,7 +40,8 @@ namespace RestLesser.Examples.TeamCity
         /// Token auth
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="token"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
         public TeamCityAuthentication(string url, string username, string password) : this(url)
         {
             Authentication = new BasicAuthentication(username, password);

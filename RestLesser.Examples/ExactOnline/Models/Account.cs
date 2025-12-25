@@ -1,4 +1,5 @@
 ﻿using RestLesser.OData;
+using System;
 
 namespace RestLesser.Examples.ExactOnline.Models
 {
