@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace RestLesser.DataAdapters
 {
@@ -11,6 +12,10 @@ namespace RestLesser.DataAdapters
         /// <inheritdoc/>
         public MediaTypeWithQualityHeaderValue MediaTypeHeader => 
             dataAdapter.MediaTypeHeader;
+
+
+        /// <inheritdoc/>
+        public Encoding Encoding => dataAdapter.Encoding;
 
         /// <inheritdoc/>
         public T Deserialize<T>(string data)

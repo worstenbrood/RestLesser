@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace RestLesser.DataAdapters
 {
@@ -20,7 +21,11 @@ namespace RestLesser.DataAdapters
         };
 
         /// <inheritdoc/>
-        public MediaTypeWithQualityHeaderValue MediaTypeHeader { get; } = new MediaTypeWithQualityHeaderValue("application/json");
+        public MediaTypeWithQualityHeaderValue MediaTypeHeader { get; } = 
+            new MediaTypeWithQualityHeaderValue("application/json");
+
+        /// <inheritdoc/>
+        public Encoding Encoding { get; } = Encoding.UTF8;
 
         /// <inheritdoc/>
         public virtual string Serialize<T>(T data)

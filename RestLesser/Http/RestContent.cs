@@ -15,7 +15,8 @@ namespace RestLesser.Http
         /// </summary>
         /// <param name="content">Content object</param>
         /// <param name="adapter">Data adapter</param>
-        public RestContent(T content, IDataAdapter adapter) : base(adapter.Serialize(content), Encoding.UTF8)
+        public RestContent(T content, IDataAdapter adapter) : 
+            base(adapter.Serialize(content), adapter.Encoding)
         {
             Headers.ContentType = adapter.MediaTypeHeader;
         }

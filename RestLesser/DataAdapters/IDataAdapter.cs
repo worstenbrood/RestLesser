@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Text;
 
 namespace RestLesser.DataAdapters
 {
@@ -11,6 +12,11 @@ namespace RestLesser.DataAdapters
         /// Media type header to sent
         /// </summary>
         MediaTypeWithQualityHeaderValue MediaTypeHeader { get; }
+
+        /// <summary>
+        /// Encoding
+        /// </summary>
+        Encoding Encoding { get; }
 
         /// <summary>
         /// Serialize an object
