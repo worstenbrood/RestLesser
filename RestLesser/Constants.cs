@@ -41,6 +41,11 @@
             public const string OrderBy = "$orderby";
 
             /// <summary>
+            /// Value
+            /// </summary>
+            public const string Value = "$value";
+
+            /// <summary>
             /// Desc
             /// </summary>
             public const string Desc = "desc";
