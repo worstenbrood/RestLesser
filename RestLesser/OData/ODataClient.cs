@@ -19,6 +19,47 @@ namespace RestLesser.OData
     public class ODataClient(string baseUrl, IAuthentication authentication) : RestClient(baseUrl, authentication), IODataClient
     {
         /// <summary>
+        /// Build url for GET
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="entry"></param>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        protected static string BuildValueUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field)
+        {
+            var primaryKeys = PrimaryKey<TClass>.GetValue(entry);
+            return $"{builder}{primaryKeys}/{field.GetMemberName()}/{Constants.Query.Value}";
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <returns></returns>
+        public async Task<TProperty> GetValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder,
+            TClass entry, Expression<Func<TClass, TProperty>> field)
+        {
+            var url = BuildValueUrl(builder, entry, field);
+            return await GetAsync<TProperty>(url);
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <returns></returns>
+        public virtual TProperty GetValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder, 
+            TClass entry, Expression<Func<TClass, TProperty>> field)
+        {
+            var url = BuildValueUrl(builder, entry, field);
+            return Get<TProperty>(url);
+        }
+
+        /// <summary>
         /// Generic method to fetch a collection of certain types and 
         /// be able to select which fields to select
         /// </summary>
@@ -129,22 +170,7 @@ namespace RestLesser.OData
         {
             Delete(builder.ToString());
         }
-
-        /// <summary>
-        /// Build url for PUT
-        /// </summary>
-        /// <typeparam name="TClass"></typeparam>
-        /// <typeparam name="TProperty"></typeparam>
-        /// <param name="builder"></param>
-        /// <param name="entry"></param>
-        /// <param name="field"></param>
-        /// <returns></returns>
-        protected static string BuildPutUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field)
-        {
-            var primaryKeys = PrimaryKey<TClass>.GetValue(entry);
-            return $"{builder}{primaryKeys}/{field.GetMemberName()}/{Constants.Query.Value}";
-        }
-
+                    
         /// <summary>
         /// Put individual property
         /// </summary>
@@ -153,7 +179,7 @@ namespace RestLesser.OData
         /// <returns></returns>
         public async Task PutValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value)
         {
-            var url = BuildPutUrl(builder, entry, field);
+            var url = BuildValueUrl(builder, entry, field);
             await PutAsync(url, value);
         }
 
@@ -165,7 +191,7 @@ namespace RestLesser.OData
         /// <returns></returns>
         public virtual void PutValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value)
         {
-            var url = BuildPutUrl(builder, entry, field);
+            var url = BuildValueUrl(builder, entry, field);
             Put(url, value);
         }
 

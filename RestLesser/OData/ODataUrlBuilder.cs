@@ -1,4 +1,5 @@
-﻿using RestLesser.OData.Interfaces;
+﻿using RestLesser.OData.Attributes;
+using RestLesser.OData.Interfaces;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace RestLesser.OData
     /// <param name="path"></param>
     public class ODataUrlBuilder<TClass>(string path) : UrlBuilder<ODataUrlBuilder<TClass>,
         ODataQueryBuilder<TClass>>(path, new ODataQueryBuilder<TClass>(path))
+        //where TClass : new()
     {
         private readonly IODataClient _client;
         private TClass[] _entries;
@@ -122,21 +124,39 @@ namespace RestLesser.OData
         }
 
         /// <summary>
+        /// Set key(s)
+        /// </summary>
+        /// <param name="keys"></param>
+        public ODataUrlBuilder<TClass> Key(params object[] keys)
+        {
+            if (_entries?.Length == null)
+            {
+                _entries = new TClass[1];
+                _entries[0] = (TClass)Activator.CreateInstance(typeof(TClass));
+            }
+
+            PrimaryKey<TClass>.SetKeys(_entries[0], keys);
+            return this;
+        }
+
+        /// <summary>
         /// Set entries (used later by the Post calls)
         /// </summary>
         /// <param name="entries">Entries to set</param>
-        public void Set(TClass[] entries)
+        public ODataUrlBuilder<TClass> Set(TClass[] entries)
         {
             _entries = entries;
+            return this;
         }
 
         /// <summary>
         /// Set a single entry (used later by the Post calls)
         /// </summary>
         /// <param name="entry"></param>
-        public void Set(TClass entry)
+        public ODataUrlBuilder<TClass> Set(TClass entry)
         {
             _entries = new[] { entry };
+            return this;
         }
 
         /// <summary>
@@ -198,7 +218,7 @@ namespace RestLesser.OData
         {
             if (_entries == null || _entries.Length == 0)
             {
-                throw new ArgumentNullException(nameof(_entries), "Use Set() first.");
+                throw new ArgumentNullException(nameof(_entries), "Use Key() or Set() first.");
             }
         }
 
@@ -269,6 +289,25 @@ namespace RestLesser.OData
             ValidateEntries();
             _client.PutValue(this, _entries[0], field, value);
             return this;
+        }
+
+        public override string ToString()
+        {
+            var path = Path;
+            if (_entries?.Length > 0)
+            {
+                path += PrimaryKey<TClass>.GetValue(_entries[0]);
+            }
+
+            var query = QueryBuilder?.ToString();
+
+            // Add query if any
+            if (!string.IsNullOrEmpty(query))
+            {
+                return $"{path}?{query}";
+            }
+
+            return path;
         }
     }
 }

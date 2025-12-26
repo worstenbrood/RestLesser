@@ -1,4 +1,5 @@
 ﻿using RestLesser.OData;
+using RestLesser.OData.Attributes;
 
 namespace RestLesser.Tests;
 
@@ -6,7 +7,20 @@ public class ODataUrlBuilderTests
 {
     private class Dummy
     {
+        [PrimaryKey]
         public int Id { get; set; }
+        public string? Name { get; set; }
+        public int[]? Data { get; set; }
+    }
+
+    private class MultiDummy
+    {
+        [PrimaryKey]
+        public int Id { get; set; }
+
+        [PrimaryKey]
+        public string? StringId { get; set; }
+
         public string? Name { get; set; }
         public int[]? Data { get; set; }
     }
@@ -235,5 +249,23 @@ public class ODataUrlBuilderTests
             .Filter(x => x.Id, c => c.Lt(9));
 
         Assert.That(query.ToString(), Is.EqualTo("/dummy?$filter=Id+gt+1+or+Id+lt+9"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_KeyTest_Single()
+    {
+        var query = new ODataUrlBuilder<Dummy>("/dummy")
+            .Key(1);
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy(1)"));
+    }
+
+    [Test]
+    public void ODataUrlBuilder_KeyTest_Multi()
+    {
+        var query = new ODataUrlBuilder<MultiDummy>("/dummy")
+            .Key(1, "2");
+
+        Assert.That(query.ToString(), Is.EqualTo("/dummy(Id=1,StringId='2')"));
     }
 }
