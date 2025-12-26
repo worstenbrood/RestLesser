@@ -142,7 +142,7 @@ namespace RestLesser.OData
         protected static string BuildPutUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field)
         {
             var primaryKeys = PrimaryKey<TClass>.GetValue(entry);
-            return $"{builder}/{primaryKeys}/{field.GetMemberName()}/{Constants.Query.Value}";
+            return $"{builder}{primaryKeys}/{field.GetMemberName()}/{Constants.Query.Value}";
         }
 
         /// <summary>

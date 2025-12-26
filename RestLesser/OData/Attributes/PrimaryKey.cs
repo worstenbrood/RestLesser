@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RestLesser.OData.Filter;
@@ -44,8 +45,18 @@ namespace RestLesser.OData.Attributes
         /// <exception cref="NotImplementedException"></exception>
         public static string GetValue(TClass o)
         {
-            var keys = Keys.Select(k => $"{k.Name}={k.GetValue(o).ToODataValue()}");
-            var collector = new Collector<string>(keys);
+            IEnumerable<string> keys;
+
+            if (Keys.Length == 1)
+            {
+                keys = new[] { $"{Keys[0].GetValue(o).ToODataValue()}" };
+            }
+            else
+            {
+                keys = Keys.Select(k => $"{k.Name}={k.GetValue(o).ToODataValue()}");
+            }
+
+            var collector = new Collector<string>(keys);            
             return $"({collector})";
         }
     }
