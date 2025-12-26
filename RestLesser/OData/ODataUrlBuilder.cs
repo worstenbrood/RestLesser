@@ -1,6 +1,7 @@
 ﻿using RestLesser.OData.Interfaces;
 using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace RestLesser.OData
 {
@@ -11,7 +12,7 @@ namespace RestLesser.OData
     /// Constructor
     /// </remarks>
     /// <param name="path"></param>
-    public class ODataUrlBuilder<TClass>(string path) : UrlBuilder<ODataUrlBuilder<TClass>, 
+    public class ODataUrlBuilder<TClass>(string path) : UrlBuilder<ODataUrlBuilder<TClass>,
         ODataQueryBuilder<TClass>>(path, new ODataQueryBuilder<TClass>(path))
     {
         private readonly IODataClient _client;
@@ -57,7 +58,7 @@ namespace RestLesser.OData
         /// <summary>
         /// Add $expand
         /// </summary>
-        public ODataUrlBuilder<TClass> Filter<TProperty>(Expression<Func<TClass, TProperty>> field, 
+        public ODataUrlBuilder<TClass> Filter<TProperty>(Expression<Func<TClass, TProperty>> field,
             FunctionF<TClass, TProperty> condition)
         {
             QueryBuilder.Filter(field, condition);
@@ -167,6 +168,15 @@ namespace RestLesser.OData
         }
 
         /// <summary>
+        /// Get entries from the api using this <see cref="ODataUrlBuilder{TClass}"/>
+        /// </summary>
+        /// <returns>An array of <typeparamref name="TClass"/></returns>
+        public async Task<TClass[]> GetEntriesAsync()
+        {
+            return await _client.GetEntriesAsync(this);
+        }
+
+        /// <summary>
         /// Get a single entry from the api using this <see cref="ODataUrlBuilder{TClass}"/>
         /// </summary>
         /// <returns>A single <typeparamref name="TClass"/></returns>
@@ -176,17 +186,41 @@ namespace RestLesser.OData
         }
 
         /// <summary>
-        /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
+        /// Get a single entry from the api using this <see cref="ODataUrlBuilder{TClass}"/>
         /// </summary>
-        /// <exception cref="ArgumentNullException"></exception>
-        public ODataUrlBuilder<TClass> PostEntries()
+        /// <returns>A single <typeparamref name="TClass"/></returns>
+        public async Task<TClass> GetEntryAsync()
+        {
+            return await _client.GetEntryAsync(this);
+        }
+
+        private void ValidateEntries()
         {
             if (_entries == null || _entries.Length == 0)
             {
                 throw new ArgumentNullException(nameof(_entries), "Use Set() first.");
             }
+        }
 
+        /// <summary>
+        /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ODataUrlBuilder<TClass> PostEntries()
+        {
+            ValidateEntries();
             _client.PostEntries(this, _entries);
+            return this;
+        }
+
+        /// <summary>
+        /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<ODataUrlBuilder<TClass>> PostEntriesAsync()
+        {
+            ValidateEntries();
+            await _client.PostEntriesAsync(this, _entries);
             return this;
         }
 
@@ -206,6 +240,34 @@ namespace RestLesser.OData
         public ODataUrlBuilder<TClass> DeleteEntries()
         {
             _client.DeleteEntries(this);
+            return this;
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task<ODataUrlBuilder<TClass>> PutValueAsync<TProperty>(Expression<Func<TClass, TProperty>> field, TProperty value)
+        {
+            ValidateEntries();
+            await _client.PutValueAsync(this, _entries[0], field, value);
+            return this;
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public ODataUrlBuilder<TClass> PutValue<TProperty>(Expression<Func<TClass, TProperty>> field, TProperty value)
+        {
+            ValidateEntries();
+            _client.PutValue(this, _entries[0], field, value);
             return this;
         }
     }
