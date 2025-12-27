@@ -23,10 +23,9 @@ namespace RestLesser.OData
         /// <typeparam name="TClass"></typeparam>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="builder"></param>
-        /// <param name="entry"></param>
         /// <param name="field"></param>
         /// <returns></returns>
-        public static string BuildValueUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field)
+        public static string BuildValueUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, Expression<Func<TClass, TProperty>> field)
         {
             return $"{builder}/{field.GetMemberName()}/{Constants.Query.Value}";
         }
@@ -38,9 +37,9 @@ namespace RestLesser.OData
         /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
         public async Task<TProperty> GetValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder,
-            TClass entry, Expression<Func<TClass, TProperty>> field)
+           Expression<Func<TClass, TProperty>> field)
         {
-            var url = BuildValueUrl(builder, entry, field);
+            var url = BuildValueUrl(builder, field);
             return await GetAsync<TProperty>(url);
         }
 
@@ -51,9 +50,9 @@ namespace RestLesser.OData
         /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
         public virtual TProperty GetValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder, 
-            TClass entry, Expression<Func<TClass, TProperty>> field)
+            Expression<Func<TClass, TProperty>> field)
         {
-            var url = BuildValueUrl(builder, entry, field);
+            var url = BuildValueUrl(builder, field);
             return Get<TProperty>(url);
         }
 
@@ -175,9 +174,10 @@ namespace RestLesser.OData
         /// <typeparam name="TClass"></typeparam>
         /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
-        public async Task PutValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value)
+        public async Task PutValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder, 
+            Expression<Func<TClass, TProperty>> field, TProperty value)
         {
-            var url = BuildValueUrl(builder, entry, field);
+            var url = BuildValueUrl(builder, field);
             await PutAsync(url, value);
         }
 
@@ -187,9 +187,10 @@ namespace RestLesser.OData
         /// <typeparam name="TClass"></typeparam>
         /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
-        public virtual void PutValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value)
+        public virtual void PutValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder, 
+            Expression<Func<TClass, TProperty>> field, TProperty value)
         {
-            var url = BuildValueUrl(builder, entry, field);
+            var url = BuildValueUrl(builder, field);
             Put(url, value);
         }
 

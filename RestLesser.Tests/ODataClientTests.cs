@@ -26,11 +26,10 @@ namespace RestLesser.Tests
         [Test]
         public void ODataClient_BuildValueUrlTest()
         {
-            var dummy = new Dummy { Id = 1 };
             var builder = new ODataUrlBuilder<Dummy>("/dummy")
-                .Set(dummy);
+                .Key(1);
 
-            var result = ODataClient.BuildValueUrl(builder, dummy, f => f.Name);
+            var result = ODataClient.BuildValueUrl(builder, f => f.Name);
             Assert.That(result, Is.EqualTo("/dummy(1)/Name/$value"));
         }
     }

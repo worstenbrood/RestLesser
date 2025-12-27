@@ -21,6 +21,16 @@ namespace RestLesser.OData
         private TClass[] _entries;
 
         /// <summary>
+        /// Entries
+        /// </summary>
+        public TClass[] Entries => _entries ??= new TClass[1];
+
+        /// <summary>
+        /// First entry
+        /// </summary>
+        public TClass FirstEntry => Entries[0] ??= (TClass)Activator.CreateInstance(typeof(TClass));
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="client"></param>
@@ -129,13 +139,7 @@ namespace RestLesser.OData
         /// <param name="keys"></param>
         public ODataUrlBuilder<TClass> Key(params object[] keys)
         {
-            if (_entries?.Length == null)
-            {
-                _entries = new TClass[1];
-                _entries[0] = (TClass)Activator.CreateInstance(typeof(TClass));
-            }
-
-            PrimaryKey<TClass>.SetKeys(_entries[0], keys);
+            PrimaryKey<TClass>.SetKeys(FirstEntry, keys);
             return this;
         }
 
@@ -176,6 +180,30 @@ namespace RestLesser.OData
         {
             Reset();
             return this;
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public async Task<TProperty> GetValueAsync<TProperty>(Expression<Func<TClass, TProperty>> field)
+        {
+            ValidateEntries();
+            return await _client.GetValueAsync(this, field);
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public TProperty GetValue<TProperty>(Expression<Func<TClass, TProperty>> field)
+        {
+            ValidateEntries();
+            return _client.GetValue(this, field);
         }
 
         /// <summary>
@@ -273,7 +301,7 @@ namespace RestLesser.OData
         public async Task<ODataUrlBuilder<TClass>> PutValueAsync<TProperty>(Expression<Func<TClass, TProperty>> field, TProperty value)
         {
             ValidateEntries();
-            await _client.PutValueAsync(this, _entries[0], field, value);
+            await _client.PutValueAsync(this, field, value);
             return this;
         }
 
@@ -287,7 +315,7 @@ namespace RestLesser.OData
         public ODataUrlBuilder<TClass> PutValue<TProperty>(Expression<Func<TClass, TProperty>> field, TProperty value)
         {
             ValidateEntries();
-            _client.PutValue(this, _entries[0], field, value);
+            _client.PutValue(this, field, value);
             return this;
         }
 
