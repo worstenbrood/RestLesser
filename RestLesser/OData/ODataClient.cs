@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using RestLesser.Authentication;
-using RestLesser.OData.Attributes;
 using RestLesser.OData.Interfaces;
 using RestLesser.OData.Models;
 
@@ -27,10 +26,9 @@ namespace RestLesser.OData
         /// <param name="entry"></param>
         /// <param name="field"></param>
         /// <returns></returns>
-        protected static string BuildValueUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field)
+        public static string BuildValueUrl<TClass, TProperty>(ODataUrlBuilder<TClass> builder, TClass entry, Expression<Func<TClass, TProperty>> field)
         {
-            var primaryKeys = PrimaryKey<TClass>.GetValue(entry);
-            return $"{builder}{primaryKeys}/{field.GetMemberName()}/{Constants.Query.Value}";
+            return $"{builder}/{field.GetMemberName()}/{Constants.Query.Value}";
         }
 
         /// <summary>

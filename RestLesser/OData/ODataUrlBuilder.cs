@@ -1,8 +1,8 @@
-﻿using RestLesser.OData.Attributes;
-using RestLesser.OData.Interfaces;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using RestLesser.OData.Attributes;
+using RestLesser.OData.Interfaces;
 
 namespace RestLesser.OData
 {
@@ -294,6 +294,7 @@ namespace RestLesser.OData
         public override string ToString()
         {
             var path = Path;
+            // Add key if supplied
             if (_entries?.Length > 0)
             {
                 path += PrimaryKey<TClass>.GetValue(_entries[0]);
