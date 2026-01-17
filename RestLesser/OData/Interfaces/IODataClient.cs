@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace RestLesser.OData.Interfaces
 {
@@ -7,6 +9,29 @@ namespace RestLesser.OData.Interfaces
     /// </summary>
     public interface IODataClient
     {
+        /// <summary>
+        /// Put a single value
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="entry"></param>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        Task<TProperty> GetValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder,
+            TClass entry, Expression<Func<TClass, TProperty>> field);
+
+        /// <summary>
+        /// Gett a single value
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="entry"></param>
+        /// <param name="field"></param>
+        TProperty GetValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder,
+           TClass entry, Expression<Func<TClass, TProperty>> field);
+
         /// <summary>
         /// Get a single entry
         /// </summary>
@@ -84,6 +109,31 @@ namespace RestLesser.OData.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <param name="builder"></param>
         Task DeleteEntriesAsync<T>(ODataUrlBuilder<T> builder);
+
+        /// <summary>
+        /// Put a single value
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="entry"></param>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        Task PutValueAsync<TClass, TProperty>(ODataUrlBuilder<TClass> builder, 
+            TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value);
+        
+        /// <summary>
+        /// Put a single value
+        /// </summary>
+        /// <typeparam name="TClass"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="builder"></param>
+        /// <param name="entry"></param>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        void PutValue<TClass, TProperty>(ODataUrlBuilder<TClass> builder,
+           TClass entry, Expression<Func<TClass, TProperty>> field, TProperty value);
 
         /// <summary>
         /// Query builder for given endpoint

@@ -17,7 +17,7 @@ namespace RestLesser.OAuth.Storage
         public TokenResponse TokenResponse { get; private set; }
 
         /// <summary>
-        /// Expiry date
+        /// Expiry date in UTC
         /// </summary>
         [JsonProperty(PropertyName = "expire_datetime")]
         public DateTime ExpireDateTime { get; private set; }

@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿using RestLesser.Serialization;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -12,6 +14,9 @@ namespace RestLesser.DataAdapters
         /// <inheritdoc/>
         public MediaTypeWithQualityHeaderValue MediaTypeHeader { get; } =
             new MediaTypeWithQualityHeaderValue("application/xml");
+
+        /// <inheritdoc/>
+        public Encoding Encoding { get; } = Encoding.UTF8;
 
         /// <inheritdoc/>
         public T Deserialize<T>(string data)

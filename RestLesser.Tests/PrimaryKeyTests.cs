@@ -45,9 +45,8 @@ namespace RestLesser.Tests
             };
 
             string result = PrimaryKey<SingleKey>.GetValue(key);
-            Assert.That(result, Is.EqualTo($"(Id={id})"));
+            Assert.That(result, Is.EqualTo($"({id})"));
         }
-
 
         [Test]
         public void PrimaryKey_MultiKeyTest()
@@ -74,7 +73,7 @@ namespace RestLesser.Tests
             };
 
             string result = PrimaryKey<StringKey>.GetValue(key);
-            Assert.That(result, Is.EqualTo($"(Id='{key.Id}')"));
+            Assert.That(result, Is.EqualTo($"('{key.Id}')"));
         }
     }
 }

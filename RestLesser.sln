@@ -7,12 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestLesser", "RestLesser\Re
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestLesser.Tests", "RestLesser.Tests\RestLesser.Tests.csproj", "{0CB6447D-BC05-42C3-895C-30ABB761B124}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestLesser.Examples", "RestLesser.Examples\RestLesser.Examples.csproj", "{DE1F496E-84B3-4518-8618-4994E7985B61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestLesser.Example", "RestLesser.Example\RestLesser.Example.csproj", "{E35A44BC-E337-4AD2-A3F0-C266E728963E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +35,10 @@ Global
 		{DE1F496E-84B3-4518-8618-4994E7985B61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE1F496E-84B3-4518-8618-4994E7985B61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE1F496E-84B3-4518-8618-4994E7985B61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E35A44BC-E337-4AD2-A3F0-C266E728963E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E35A44BC-E337-4AD2-A3F0-C266E728963E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E35A44BC-E337-4AD2-A3F0-C266E728963E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E35A44BC-E337-4AD2-A3F0-C266E728963E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

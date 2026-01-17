@@ -1,5 +1,8 @@
-﻿using System;
+﻿using RestLesser.OData.Attributes;
+using RestLesser.OData.Interfaces;
+using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace RestLesser.OData
 {
@@ -10,9 +13,23 @@ namespace RestLesser.OData
     /// Constructor
     /// </remarks>
     /// <param name="path"></param>
-    public class ODataUrlBuilder<TClass>(string path) : UrlBuilder<ODataUrlBuilder<TClass>, 
+    public class ODataUrlBuilder<TClass>(string path) : UrlBuilder<ODataUrlBuilder<TClass>,
         ODataQueryBuilder<TClass>>(path, new ODataQueryBuilder<TClass>(path))
+        //where TClass : new()
     {
+        private readonly IODataClient _client;
+        private TClass[] _entries;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="path"></param>
+        public ODataUrlBuilder(IODataClient client, string path) : this(path)
+        {
+            _client = client;
+        }
+
         /// <summary>
         /// Add $select
         /// </summary>
@@ -43,7 +60,7 @@ namespace RestLesser.OData
         /// <summary>
         /// Add $expand
         /// </summary>
-        public ODataUrlBuilder<TClass> Filter<TProperty>(Expression<Func<TClass, TProperty>> field, 
+        public ODataUrlBuilder<TClass> Filter<TProperty>(Expression<Func<TClass, TProperty>> field,
             FunctionF<TClass, TProperty> condition)
         {
             QueryBuilder.Filter(field, condition);
@@ -107,13 +124,190 @@ namespace RestLesser.OData
         }
 
         /// <summary>
-        /// Reset query
+        /// Set key(s)
+        /// </summary>
+        /// <param name="keys"></param>
+        public ODataUrlBuilder<TClass> Key(params object[] keys)
+        {
+            if (_entries?.Length == null)
+            {
+                _entries = new TClass[1];
+                _entries[0] = (TClass)Activator.CreateInstance(typeof(TClass));
+            }
+
+            PrimaryKey<TClass>.SetKeys(_entries[0], keys);
+            return this;
+        }
+
+        /// <summary>
+        /// Set entries (used later by the Post calls)
+        /// </summary>
+        /// <param name="entries">Entries to set</param>
+        public ODataUrlBuilder<TClass> Set(TClass[] entries)
+        {
+            _entries = entries;
+            return this;
+        }
+
+        /// <summary>
+        /// Set a single entry (used later by the Post calls)
+        /// </summary>
+        /// <param name="entry"></param>
+        public ODataUrlBuilder<TClass> Set(TClass entry)
+        {
+            _entries = new[] { entry };
+            return this;
+        }
+
+        /// <summary>
+        /// Reset
+        /// </summary>
+        public override void Reset()
+        {
+            _entries = null;
+            base.Reset();
+        }
+
+        /// <summary>
+        /// Reset the query
         /// </summary>
         /// <returns></returns>
         public ODataUrlBuilder<TClass> ResetQuery()
         {
             Reset();
             return this;
+        }
+
+        /// <summary>
+        /// Get entries from the api using this <see cref="ODataUrlBuilder{TClass}"/>
+        /// </summary>
+        /// <returns>An array of <typeparamref name="TClass"/></returns>
+        public TClass[] GetEntries()
+        {
+            return _client.GetEntries(this);
+        }
+
+        /// <summary>
+        /// Get entries from the api using this <see cref="ODataUrlBuilder{TClass}"/>
+        /// </summary>
+        /// <returns>An array of <typeparamref name="TClass"/></returns>
+        public async Task<TClass[]> GetEntriesAsync()
+        {
+            return await _client.GetEntriesAsync(this);
+        }
+
+        /// <summary>
+        /// Get a single entry from the api using this <see cref="ODataUrlBuilder{TClass}"/>
+        /// </summary>
+        /// <returns>A single <typeparamref name="TClass"/></returns>
+        public TClass GetEntry()
+        {
+            return _client.GetEntry(this);
+        }
+
+        /// <summary>
+        /// Get a single entry from the api using this <see cref="ODataUrlBuilder{TClass}"/>
+        /// </summary>
+        /// <returns>A single <typeparamref name="TClass"/></returns>
+        public async Task<TClass> GetEntryAsync()
+        {
+            return await _client.GetEntryAsync(this);
+        }
+
+        private void ValidateEntries()
+        {
+            if (_entries == null || _entries.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(_entries), "Use Key() or Set() first.");
+            }
+        }
+
+        /// <summary>
+        /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public ODataUrlBuilder<TClass> PostEntries()
+        {
+            ValidateEntries();
+            _client.PostEntries(this, _entries);
+            return this;
+        }
+
+        /// <summary>
+        /// Post the entries set by the <see cref="Set(TClass)"/> and <see cref="Set(TClass[])"/> methods.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<ODataUrlBuilder<TClass>> PostEntriesAsync()
+        {
+            ValidateEntries();
+            await _client.PostEntriesAsync(this, _entries);
+            return this;
+        }
+
+        /// <summary>
+        /// Post a single entry, no need to call Set() before
+        /// </summary>
+        /// <param name="entry"></param>
+        public ODataUrlBuilder<TClass> PostEntry(TClass entry)
+        {
+            _client.PostEntry(this, entry);
+            return this;
+        }
+
+        /// <summary>
+        /// Delete entries specified by this <see cref="ODataUrlBuilder{TClass}"/>
+        /// </summary>
+        public ODataUrlBuilder<TClass> DeleteEntries()
+        {
+            _client.DeleteEntries(this);
+            return this;
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task<ODataUrlBuilder<TClass>> PutValueAsync<TProperty>(Expression<Func<TClass, TProperty>> field, TProperty value)
+        {
+            ValidateEntries();
+            await _client.PutValueAsync(this, _entries[0], field, value);
+            return this;
+        }
+
+        /// <summary>
+        /// Put individual property
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="field"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public ODataUrlBuilder<TClass> PutValue<TProperty>(Expression<Func<TClass, TProperty>> field, TProperty value)
+        {
+            ValidateEntries();
+            _client.PutValue(this, _entries[0], field, value);
+            return this;
+        }
+
+        public override string ToString()
+        {
+            var path = Path;
+            if (_entries?.Length > 0)
+            {
+                path += PrimaryKey<TClass>.GetValue(_entries[0]);
+            }
+
+            var query = QueryBuilder?.ToString();
+
+            // Add query if any
+            if (!string.IsNullOrEmpty(query))
+            {
+                return $"{path}?{query}";
+            }
+
+            return path;
         }
     }
 }
