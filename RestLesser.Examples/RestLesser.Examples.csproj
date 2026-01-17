@@ -12,8 +12,8 @@
 	<PropertyGroup>
 		<Title>RestLesser Examples</Title>
 		<PackageId>RestLesser.Examples</PackageId>
-		<AssemblyVersion>1.4.2.0</AssemblyVersion>
-		<VersionPrefix>1.4.2</VersionPrefix>
+		<AssemblyVersion>1.4.3.0</AssemblyVersion>
+		<VersionPrefix>1.4.3</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<AssemblyTitle>RestLesser.Examples</AssemblyTitle>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
