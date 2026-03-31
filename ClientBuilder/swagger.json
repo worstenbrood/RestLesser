@@ -1,0 +1,2162 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "PublicIntegration API",
+    "description": "Build Version: 8.2.0",
+    "contact": {
+      "name": "Enhesa Support",
+      "url": "https://www.enhesa.com",
+      "email": "support@enhesa.com"
+    },
+    "license": {
+      "name": "© 2025 Enhesa NV"
+    },
+    "version": "1.0"
+  },
+  "paths": {
+    "/publicintegration/compliance-intelligence/v1/clients/{clientId}/facilities/{facilityId}/requirements": {
+      "post": {
+        "tags": [
+          "ComplianceIntelligence"
+        ],
+        "summary": "GetRequirementsByClientAndFacility",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "facilityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "includeAnyApplicability",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enhesa.PublicIntegration.Api.Models.Requests.RequirementsSearchModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enhesa.PublicIntegration.Api.Models.Requests.RequirementsSearchModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enhesa.PublicIntegration.Api.Models.Requests.RequirementsSearchModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Returned when the request does not include the Authorization header or includes an invalid or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.GetRequirementsResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publicintegration/compliance-intelligence/v1/clients/{clientId}/facilities": {
+      "post": {
+        "tags": [
+          "ComplianceIntelligence"
+        ],
+        "summary": "GetFacilitiesByClientId",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Returned when the request does not include the Authorization header or includes an invalid or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.GetFacilitiesResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publicintegration/compliance-intelligence/v1/clients/{clientId}/contracts": {
+      "get": {
+        "tags": [
+          "ComplianceIntelligence"
+        ],
+        "summary": "GetActiveContractByClientId",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Returned when the request does not include the Authorization header or includes an invalid or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.GetContractResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publicintegration/compliance-intelligence/v1/clients/{clientId}/facilities/{facilityId}/topics": {
+      "get": {
+        "tags": [
+          "ComplianceIntelligence"
+        ],
+        "summary": "GetClientTopicsByFacilityId",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "facilityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Response when the user is not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.GetTopicsResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ComplianceIntelligence"
+        ],
+        "summary": "CreateTopicApplicabilityAnswersForClientAndFacility",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "facilityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enhesa.Domain.Models.Requests.TopicApplicabilityAnswersRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enhesa.Domain.Models.Requests.TopicApplicabilityAnswersRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enhesa.Domain.Models.Requests.TopicApplicabilityAnswersRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Returned when the request does not include the Authorization header or includes an invalid or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.Responses.TopicApplicabilityAnswersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publicintegration/compliance-intelligence/v1/clients/{clientId}/facilities/{facilityId}/applicability-questions": {
+      "get": {
+        "tags": [
+          "ComplianceIntelligence"
+        ],
+        "summary": "GetApplicabilityQuestionsByClientAndFacility",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "facilityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Returned when the request does not include the Authorization header or includes an invalid or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.GetApplicabilityQuestionsResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publicintegration/compliance-intelligence/v1/clients/{clientId}/legalFoundations/{legalFoundationId}": {
+      "post": {
+        "tags": [
+          "LegalFoundation"
+        ],
+        "summary": "GetLegalFoundationById",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "legalFoundationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Returned when the request does not include the Authorization header or includes an invalid or expired token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.LegalFoundation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publicintegration/compliance-intelligence/v1/clients/{clientId}/legalFoundations/batch": {
+      "post": {
+        "tags": [
+          "LegalFoundation"
+        ],
+        "summary": "GetLegalFoundationByIds",
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 50,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Enhesa-Application-ID",
+            "in": "header",
+            "description": "Identifier of the application.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "description": "Identifier of the operation. If it is set, the value will be used as a correlation ID for all requests sent during the current request and it will be sent as a OperationId in Kafka messages.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Enhesa-Mocking-Tool",
+            "in": "header",
+            "schema": {
+              "type": "String"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Returned when the request is malformed or missing required parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Returned when the server encounters an unexpected condition or unhandled exception.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.GetLegalFoundationsBatchResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Response when the user does not have permissions to perform this operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Enhesa.Domain.Models.ApplicabilityQuestion": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statement": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ApplicabilityQuestionTopic"
+            },
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ApplicabilityQuestionCategory"
+            },
+            "nullable": true
+          },
+          "linkedRequirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ApplicabilityQuestionRequirement"
+            },
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "languageCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "jurisdiction": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ApplicabilityQuestionJurisdiction"
+            },
+            "nullable": true
+          },
+          "translationComplete": {
+            "type": "boolean"
+          },
+          "applicabilityAnswer": {
+            "$ref": "#/components/schemas/Enhesa.ObjectsModel.Enums.ApplicabilityValues"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ApplicabilityQuestionCategory": {
+        "required": [
+          "businessId"
+        ],
+        "type": "object",
+        "properties": {
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "translationStatus": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ApplicabilityQuestionJurisdiction": {
+        "type": "object",
+        "properties": {
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commonBusinessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "iso2Code": {
+            "type": "string",
+            "nullable": true
+          },
+          "iso3Code": {
+            "type": "string",
+            "nullable": true
+          },
+          "isoSubdivisionCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/Enhesa.Domain.Models.ServiceClientModels.ProductStatus"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ApplicabilityQuestionRequirement": {
+        "type": "object",
+        "properties": {
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commonBusinessId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ApplicabilityQuestionTopic": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "topicCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.BatchItemError": {
+        "type": "object",
+        "properties": {
+          "commomBusinessId": {
+            "type": "string",
+            "nullable": true
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Category": {
+        "required": [
+          "businessId",
+          "languageId"
+        ],
+        "type": "object",
+        "properties": {
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "translationStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "languageId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Citation": {
+        "required": [
+          "id",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Contract": {
+        "required": [
+          "id",
+          "iso2CountryCode"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "iso2CountryCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "isoSubdivisionCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ContractCategory"
+            },
+            "nullable": true
+          },
+          "contractStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contractExpirationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.LanguageSubSet"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ContractCategory": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "errorDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "stackTrace": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Facility": {
+        "required": [
+          "active",
+          "id",
+          "iso2CountryCode",
+          "iso3CountryCode",
+          "isoSubdivisionCode",
+          "languageSubSet",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "iso2CountryCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "iso3CountryCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "isoSubdivisionCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "languageSubSet": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.LanguageSubSet"
+            }
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.GetApplicabilityQuestionsResult": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ApplicabilityQuestion"
+            },
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemsPerPage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.GetContractResult": {
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.Contract"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemsPerPage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.GetFacilitiesResult": {
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.Facility"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemsPerPage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.GetLegalFoundationsBatchResult": {
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.LegalFoundation"
+            }
+          },
+          "idsNotFound": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemsPerPage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.GetRequirementsResult": {
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.Requirement"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemsPerPage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.GetTopicsResult": {
+        "required": [
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.TopicDetail"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "itemsPerPage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.IssuingAuthority": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.LanguageSubSet": {
+        "required": [
+          "iso2LanguageCode",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "iso2LanguageCode": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.LegalFoundation": {
+        "required": [
+          "citations",
+          "commonId",
+          "id",
+          "issuingAuthority",
+          "regulationLink",
+          "relatedTopics",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commonId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "translationComplete": {
+            "type": "boolean"
+          },
+          "relatedTopics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.Topic"
+            }
+          },
+          "regulationLink": {
+            "type": "string",
+            "format": "uri"
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.Citation"
+            }
+          },
+          "issuingAuthority": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.IssuingAuthority"
+            }
+          },
+          "jurisdictions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ServiceClientModels.JurisdictionIso2Code"
+            },
+            "nullable": true
+          },
+          "mainRequirements": {
+            "type": "string",
+            "nullable": true
+          },
+          "implementations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ServiceClientModels.LegalFoundationImplementationResponse"
+            },
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ServiceClientModels.LegalFoundationCategoryResponse"
+            },
+            "nullable": true
+          },
+          "parentFoundationId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "Summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "versionNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Requests.TopicApplicabilityAnswersRequest": {
+        "type": "object",
+        "properties": {
+          "commonBusinessIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "applicability-answer": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Requirement": {
+        "required": [
+          "commonId",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commonId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statement": {
+            "type": "string",
+            "nullable": true
+          },
+          "scope": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalInformation": {
+            "type": "string",
+            "nullable": true
+          },
+          "enhesaLink": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "iso2CountryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "iso3CountryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isoSubdivisionCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "topic": {
+            "$ref": "#/components/schemas/Enhesa.Domain.Models.Topic"
+          },
+          "enhesaPublicationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "requiresRevalidation": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "translationComplete": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicabilityAnswer": {
+            "type": "string",
+            "nullable": true
+          },
+          "complianceAnswer": {
+            "type": "string",
+            "nullable": true
+          },
+          "legalFoundations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ShortLegalFoundation"
+            },
+            "nullable": true
+          },
+          "regulationLink": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "nullable": true
+          },
+          "supportingDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.SupportingDocument"
+            },
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.Category"
+            },
+            "nullable": true
+          },
+          "ContentReferenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "$ref": "#/components/schemas/Enhesa.ObjectsModel.Model.Action"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Responses.TopicApplicabilityAnswersResponse": {
+        "type": "object",
+        "properties": {
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "successful": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.BatchItemError"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ServiceClientModels.HyperLinkResponse": {
+        "type": "object",
+        "properties": {
+          "link": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ServiceClientModels.JurisdictionIso2Code": {
+        "type": "object",
+        "properties": {
+          "iso2CountryCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ServiceClientModels.LegalFoundationCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ServiceClientModels.LegalFoundationImplementationResponse": {
+        "type": "object",
+        "properties": {
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amendmentTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "amendmentLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "linkedCitationIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "hyperLinks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ServiceClientModels.HyperLinkResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ServiceClientModels.ProductStatus": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Enhesa.Domain.Models.ShortLegalFoundation": {
+        "required": [
+          "citations",
+          "commonId",
+          "id",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commonId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "translationComplete": {
+            "type": "boolean"
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.Citation"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.SupportingDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "archive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.Topic": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.TopicDetail": {
+        "required": [
+          "commonBusinessId",
+          "name",
+          "topicCode"
+        ],
+        "type": "object",
+        "properties": {
+          "commonBusinessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "topicCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentTopicId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "parentTopicCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "applicability-answer": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ValidationError": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.Domain.Models.ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.Domain.Models.ValidationError"
+            },
+            "nullable": true
+          },
+          "errorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "errorDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "stackTrace": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.ObjectsModel.Enums.ApplicabilityValues": {
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Enhesa.ObjectsModel.Model.Action": {
+        "required": [
+          "actionItems",
+          "standardizedObject",
+          "subject"
+        ],
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "nullable": true
+          },
+          "standardizedObject": {
+            "type": "string",
+            "nullable": true
+          },
+          "actionItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Enhesa.ObjectsModel.Model.ActionItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.ObjectsModel.Model.ActionItem": {
+        "required": [
+          "description",
+          "timeframe"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeframe": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Enhesa.PublicIntegration.Api.Models.Requests.RequirementsSearchModel": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "toDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "topicIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme.\nEnter 'Bearer' [space] and then your token in the text input below.\n\nExample: 'Bearer TOKEN'\n",
+        "name": "Authorization",
+        "in": "header"
+      },
+      "Oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://identity.acceptance-ng.ehsmonitor.com/connect/authorize",
+            "scopes": {
+              "compliance_intelligence_api:read": "PublicIntegration API"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ],
+      "Oauth2": [
+        "compliance_intelligence_api:read"
+      ]
+    }
+  ]
+}
