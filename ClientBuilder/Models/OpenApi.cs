@@ -1,44 +1,67 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ClientBuilder.Models
 {
-    public class Swagger
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum OpenApiType
     {
+        Object,
+        Enum,
+        Array,
+        Primitive,
+        Integer,
+        String,
+        Boolean,
+    }
+
+    public class OpenApi
+    {
+        public static OpenApi? Load(string filePath) => 
+            JsonSerializer.Deserialize<OpenApi>(File.ReadAllText(filePath, Encoding.UTF8));
+        
         [JsonPropertyName("openapi")]
-        public string? OpenApi { get; set; }
+        public string? Version { get; set; }
 
         [JsonPropertyName("info")]
-        public SwaggerInfo? Info { get; set; }
+        public OpenApiInfo? Info { get; set; }
 
         [JsonPropertyName("paths")]
-        public Dictionary<string, SwaggerPath>? Paths { get; set; }
+        public Dictionary<string, OpenApiPath>? Paths { get; set; }
 
         [JsonPropertyName("components")]
-        public SwaggerComponents? Components { get; set; }
+        public OpenApiComponents? Components { get; set; }
     }
 
-    public class SwaggerComponents
+    public class OpenApiComponents
     {
         [JsonPropertyName("schemas")]
-        public Dictionary<string, SwaggerComponentSchema>? Schemas { get; set; }
+        public Dictionary<string, OpenApiComponentSchema>? Schemas { get; set; }
     }
 
-    public class SwaggerComponentSchema
+    public class OpenApiComponentSchema
     {
+        [JsonPropertyName("enum")]
+        public List<int>? Enum { get; set; }
+
         [JsonPropertyName("required")]
         public List<string>? Required { get; set; }
 
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public OpenApiType? Type { get; set; }
+
+        [JsonPropertyName("format")]
+        public string? Format { get; set; }
 
         [JsonPropertyName("properties")]
-        public Dictionary<string, SwaggerProperty>? Properties { get; set; }
+        public Dictionary<string, OpenApiProperty>? Properties { get; set; }
     }
 
-    public class SwaggerProperty : SwaggerSchema
+    public class OpenApiProperty : OpenApiSchema
     {
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public OpenApiType? Type { get; set; }
 
         [JsonPropertyName("format")]
         public string? Format { get; set; }
@@ -47,22 +70,25 @@ namespace ClientBuilder.Models
         public bool? Nullable { get; set; }
 
         [JsonPropertyName("items")]
-        public SwaggerSchema? Items { get; set; }
+        public OpenApiSchema? Items { get; set; }
     }
 
-    public class SwaggerPath
+    public class OpenApiPath
     {
         [JsonPropertyName("get")]
-        public SwaggerOperation? Get { get; set; }
+        public OpenApiOperation? Get { get; set; }
+        
         [JsonPropertyName("post")]
-        public SwaggerOperation? Post { get; set; }
+        public OpenApiOperation? Post { get; set; }
+        
         [JsonPropertyName("put")]
-        public SwaggerOperation? Put { get; set; }
+        public OpenApiOperation? Put { get; set; }
+
         [JsonPropertyName("delete")]
-        public SwaggerOperation? Delete { get; set; }
+        public OpenApiOperation? Delete { get; set; }
     }
 
-    public class SwaggerOperation
+    public class OpenApiOperation
     {
         [JsonPropertyName("tags")]
         public List<string>? Tags { get; set; }
@@ -74,44 +100,43 @@ namespace ClientBuilder.Models
         public string? Description { get; set; }
 
         [JsonPropertyName("parameters")]
-        public List<SwaggerParameter>? Parameters { get; set; }
+        public List<OpenApiParameter>? Parameters { get; set; }
 
         [JsonPropertyName("requestBody")]
-        public SwaggerRequestBody? RequestBody { get; set; }
+        public OpenApiRequestBody? RequestBody { get; set; }
 
         [JsonPropertyName("responses")]
-        public Dictionary<string, SwaggerResponse>? Responses { get; set; }
+        public Dictionary<string, OpenApiResponse>? Responses { get; set; }
     }
       
-
-    public class SwaggerResponse
+    public class OpenApiResponse
     {
         [JsonPropertyName("description")]
         public string? Description { get; set; }
 
         [JsonPropertyName("content")]
-        public Dictionary<string, SwaggerMediaType>? Content { get; set; }
+        public Dictionary<string, OpenApiMediaType>? Content { get; set; }
     }
 
-    public class SwaggerRequestBody
+    public class OpenApiRequestBody
     {
         [JsonPropertyName("content")]
-        public Dictionary<string, SwaggerMediaType>? Content { get; set; }
+        public Dictionary<string, OpenApiMediaType>? Content { get; set; }
     }
 
-    public class SwaggerMediaType
+    public class OpenApiMediaType
     {
         [JsonPropertyName("schema")]
-        public SwaggerSchema? Schema { get; set; }
+        public OpenApiSchema? Schema { get; set; }
     }
 
-    public class SwaggerSchema
+    public class OpenApiSchema
     {
         [JsonPropertyName("$ref")]
         public string? Ref { get; set; }
     }
 
-    public class SwaggerInfo
+    public class OpenApiInfo
     {
         [JsonPropertyName("title")]
         public string? Title { get; set; }
@@ -123,13 +148,13 @@ namespace ClientBuilder.Models
         public string? Description { get; set; }
 
         [JsonPropertyName("contact")]
-        public SwaggerContact? Contact { get; set; }
+        public OpenApiContact? Contact { get; set; }
 
         [JsonPropertyName("license")]
-        public SwaggerLicense? License { get; set; }
+        public OpenApiLicense? License { get; set; }
     }
 
-    public class SwaggerContact
+    public class OpenApiContact
     {
         [JsonPropertyName("name")]
         public string? Name { get; set; }
@@ -141,13 +166,13 @@ namespace ClientBuilder.Models
         public string? Url { get; set; }
     }
 
-    public class SwaggerLicense
+    public class OpenApiLicense
     {
         [JsonPropertyName("name")]
         public string? Name { get; set; }
     }
 
-    public class SwaggerParameter
+    public class OpenApiParameter
     {
         [JsonPropertyName("name")]
         public string? Name { get; set; }
@@ -162,10 +187,10 @@ namespace ClientBuilder.Models
         public bool Required { get; set; }
 
         [JsonPropertyName("schema")]
-        public SwaggerParameterSchema? Schema { get; set; }
+        public OpenApiParameterSchema? Schema { get; set; }
     }
 
-    public class SwaggerParameterSchema
+    public class OpenApiParameterSchema
     {
         [JsonPropertyName("type")]
         public string? Type { get; set; }
