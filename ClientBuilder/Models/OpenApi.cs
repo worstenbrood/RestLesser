@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace ClientBuilder.Models
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum OpenApiType
     {
         Object,
@@ -16,10 +15,27 @@ namespace ClientBuilder.Models
         Boolean,
     }
 
+    public enum OpenApiFormat
+    {
+        Uuid,
+        Int32,
+        Int64,
+        DateTime,
+        Uri
+    }
+
     public class OpenApi
     {
-        public static OpenApi? Load(string filePath) => 
-            JsonSerializer.Deserialize<OpenApi>(File.ReadAllText(filePath, Encoding.UTF8));
+        public static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.General)
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters =
+            {
+                new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower)
+            }
+        };
+
+        public static OpenApi? Load(string filePath) => JsonSerializer.Deserialize<OpenApi>(File.ReadAllText(filePath, Encoding.UTF8), JsonOptions);
         
         [JsonPropertyName("openapi")]
         public string? Version { get; set; }
@@ -40,7 +56,7 @@ namespace ClientBuilder.Models
         public Dictionary<string, OpenApiComponentSchema>? Schemas { get; set; }
     }
 
-    public class OpenApiComponentSchema
+    public class OpenApiComponentSchema : OpenApiSchema
     {
         [JsonPropertyName("enum")]
         public List<int>? Enum { get; set; }
@@ -48,24 +64,12 @@ namespace ClientBuilder.Models
         [JsonPropertyName("required")]
         public List<string>? Required { get; set; }
 
-        [JsonPropertyName("type")]
-        public OpenApiType? Type { get; set; }
-
-        [JsonPropertyName("format")]
-        public string? Format { get; set; }
-
         [JsonPropertyName("properties")]
         public Dictionary<string, OpenApiProperty>? Properties { get; set; }
     }
 
     public class OpenApiProperty : OpenApiSchema
     {
-        [JsonPropertyName("type")]
-        public OpenApiType? Type { get; set; }
-
-        [JsonPropertyName("format")]
-        public string? Format { get; set; }
-
         [JsonPropertyName("nullable")]
         public bool? Nullable { get; set; }
 
@@ -130,12 +134,6 @@ namespace ClientBuilder.Models
         public OpenApiSchema? Schema { get; set; }
     }
 
-    public class OpenApiSchema
-    {
-        [JsonPropertyName("$ref")]
-        public string? Ref { get; set; }
-    }
-
     public class OpenApiInfo
     {
         [JsonPropertyName("title")]
@@ -187,15 +185,20 @@ namespace ClientBuilder.Models
         public bool Required { get; set; }
 
         [JsonPropertyName("schema")]
-        public OpenApiParameterSchema? Schema { get; set; }
+        public OpenApiSchema? Schema { get; set; }
     }
 
-    public class OpenApiParameterSchema
+    public class OpenApiSchema
     {
+        [JsonPropertyName("$ref")]
+        public string? Ref { get; set; }
+
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public OpenApiType? Type { get; set; }
 
         [JsonPropertyName("format")]
-        public string? Format { get; set; }
+        public OpenApiFormat? Format { get; set; }
+
+
     }
 }

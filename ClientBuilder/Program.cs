@@ -5,5 +5,6 @@ Console.WriteLine($"OpenAPI Version: {openApi?.Version}");
 
 foreach(var component in openApi?.Components?.Schemas ?? new Dictionary<string, OpenApiComponentSchema>())
 {
-    Console.WriteLine($"Component: {component.Key}, Type: {component.Value.Type}");
+
+   
 }
