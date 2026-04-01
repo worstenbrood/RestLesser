@@ -191,14 +191,12 @@ namespace ClientBuilder.Models
     public class OpenApiSchema
     {
         [JsonPropertyName("$ref")]
-        public string? Ref { get; set; }
+        public string? Reference { get; set; }
 
         [JsonPropertyName("type")]
         public OpenApiType? Type { get; set; }
 
         [JsonPropertyName("format")]
         public OpenApiFormat? Format { get; set; }
-
-
     }
 }
