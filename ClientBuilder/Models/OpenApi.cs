@@ -56,7 +56,7 @@ namespace ClientBuilder.Models
         public Dictionary<string, OpenApiComponentSchema>? Schemas { get; set; }
     }
 
-    public class OpenApiComponentSchema : OpenApiSchema
+    public class OpenApiComponentSchema : OpenApiObject
     {
         [JsonPropertyName("enum")]
         public List<int>? Enum { get; set; }
@@ -68,13 +68,10 @@ namespace ClientBuilder.Models
         public Dictionary<string, OpenApiProperty>? Properties { get; set; }
     }
 
-    public class OpenApiProperty : OpenApiSchema
+    public class OpenApiProperty : OpenApiObject
     {
         [JsonPropertyName("nullable")]
         public bool? Nullable { get; set; }
-
-        [JsonPropertyName("items")]
-        public OpenApiSchema? Items { get; set; }
     }
 
     public class OpenApiPath
@@ -131,7 +128,7 @@ namespace ClientBuilder.Models
     public class OpenApiMediaType
     {
         [JsonPropertyName("schema")]
-        public OpenApiSchema? Schema { get; set; }
+        public OpenApiObject? Schema { get; set; }
     }
 
     public class OpenApiInfo
@@ -185,10 +182,10 @@ namespace ClientBuilder.Models
         public bool Required { get; set; }
 
         [JsonPropertyName("schema")]
-        public OpenApiSchema? Schema { get; set; }
+        public OpenApiObject? Schema { get; set; }
     }
 
-    public class OpenApiSchema
+    public class OpenApiObject
     {
         [JsonPropertyName("$ref")]
         public string? Reference { get; set; }
@@ -198,5 +195,8 @@ namespace ClientBuilder.Models
 
         [JsonPropertyName("format")]
         public OpenApiFormat? Format { get; set; }
+
+        [JsonPropertyName("items")]
+        public OpenApiObject? Items { get; set; }
     }
 }

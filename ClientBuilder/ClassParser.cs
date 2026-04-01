@@ -6,6 +6,32 @@
         public readonly string FullName;
         public readonly string Namespace;
         
+        public static string GetNamespace(string fullName)
+        {
+            var lastDotIndex = fullName.LastIndexOf('.');
+            if (lastDotIndex == -1)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return fullName[..lastDotIndex];
+            }
+        }
+
+        public static string GetName(string fullName)
+        {
+            var lastDotIndex = fullName.LastIndexOf('.');
+            if (lastDotIndex == -1)
+            {
+                return fullName;
+            }
+            else
+            {
+                return fullName[(lastDotIndex + 1)..];
+            }
+        }
+
         public ClassParser(string fullName)
         {
             FullName = fullName;

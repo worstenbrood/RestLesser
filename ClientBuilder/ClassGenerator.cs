@@ -3,62 +3,123 @@ using System.Text;
 
 namespace ClientBuilder
 {
-    internal class ClassGenerator
+    internal class ClassGenerator(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer) : GeneratorBase(fullName, schemas, serializer)
     {
-        private readonly ClassParser _class;
-        private readonly Dictionary<string, OpenApiComponentSchema> _schemas;
-        private readonly OpenApiComponentSchema _schema;
-        private readonly Serializer _serializer;
+        /// <summary>
+        /// Class access modifier, default is public
+        /// </summary>
+        public string ClassAccessModifier = "public";
 
-        public ClassGenerator(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer)
+        /// <summary>
+        /// Specifies the access modifier for a property.
+        /// </summary>
+        public string PropertyAccessModifier = "public";
+
+        /// <summary>
+        /// Used for properties
+        /// </summary>
+        public string PropertySuffix = "{ get; set; }";
+
+        /// <summary>
+        /// Makes all properties nullable, default is false. This is useful when the OpenAPI spec does not specify required properties, or when you want to allow null values for all properties. Note that this will 
+        /// make value types (like int, bool) nullable (int?, bool?) and reference types (like string) will be nullable with a '?' suffix (string?).
+        /// </summary>
+        public bool NullableProperties { get; set; } = false;
+
+        /// <summary>
+        /// Default type for properties with no type specified, default is object.
+        /// </summary>
+        public string DefaultPropertyType { get; set; } = "object";
+
+        /// <summary>
+        /// String format for array types, default is List<{0}>. The {0} will be replaced with the type of the array items. 
+        /// For example, if the array items are of type string, the resulting type will be List<string>.
+        /// </summary>
+        public string ArrayTypeFormat { get; set; } = "List<{0}>";
+
+        private string HandleObject(OpenApiObject? schema, bool nullable = true)
         {
-            _class = new ClassParser(fullName);
-            _schemas = schemas;
-            _schema = _schemas[fullName];
-            _serializer = serializer;
+            if (schema?.Items != null)
+            {
+                return $"{HandleType(schema.Items, nullable)}";
+            }
+            else if (schema?.Reference != null)
+            {
+                return $"{HandleReference(schema.Reference)}";
+            }
+            return HandleType(schema, nullable);
         }
 
-        private string HandleType(OpenApiProperty? property)
+        private string HandleArray(OpenApiObject? schema) => string.Format(ArrayTypeFormat, HandleObject(schema, false));
+
+        private string HandleEnum(OpenApiObject? schema)
         {
-            if (property == null)
+            if (schema?.Reference != null)
+            {
+                return HandleReference(schema.Reference);
+            }
+           
+            return "int";
+        }
+
+        private string HandleType(OpenApiObject? apiObject, bool nullable = true)
+        {
+            if (apiObject == null)
                 return string.Empty;
 
-            // Handle types
-            return property.Type switch
+            var result = apiObject?.Type switch
             {
-                OpenApiType.Array => $"List<{property?.Items?.Type}>",
                 OpenApiType.String => "string",
                 OpenApiType.Integer => "int",
                 OpenApiType.Boolean => "bool",
-                OpenApiType.Object => "object",
-                OpenApiType.Enum => HandleRef(property?.Reference ?? string.Empty),
+                OpenApiType.Array => HandleArray(apiObject?.Items),
+                OpenApiType.Object => HandleObject(apiObject, nullable),
+                OpenApiType.Enum => HandleEnum(apiObject),
                 null => "object",
                 _ => throw new NotSupportedException()
             };
+
+            // Make nullable
+            if (NullableProperties && nullable)
+            {
+                result += '?';
+            }
+            return result;
         }
 
-        private string HandleRef(string reference)
+        private string HandleReference(string reference)
         {
             var refName = reference.Split('/').Last();
             if (Cache.Instance.Contains(refName))
-                return refName;
-            var generator = new ClassGenerator(refName, _schemas, _serializer);
+                return ClassParser.GetName(refName);
+
+            var generator = new ClassGenerator(refName, Schemas, Serializer) 
+            { 
+                NullableProperties = NullableProperties, 
+                DefaultPropertyType = DefaultPropertyType, 
+                ArrayTypeFormat = ArrayTypeFormat 
+            };
             generator.GenerateFile();
-            return refName;
+
+            return ClassParser.GetName(refName);
         }
+
+        private static string HandlePropertyName(string propertyName) =>
+            char.ToUpper(propertyName[0]) + propertyName[1..];
+        
+        private static string Indent(int level) => new (' ', level * 4);
 
         public string GenerateProperties(int level = 0)
         {
-            if (_schema.Properties == null)
+            if (Schema.Properties == null)
                 return string.Empty;
 
-            var indent = new string(' ', level * 4);
+            var indent = Indent(level);
             var sb = new StringBuilder();
-            foreach (var prop in _schema.Properties)
+            foreach (var prop in Schema.Properties)
             {
-                var propName = char.ToUpper(prop.Key[0]) + prop.Key.Substring(1);
-                sb.AppendLine($"{indent}[{_serializer.Property}(\"{prop.Key}\")]");
-                sb.AppendLine($"{indent}public {HandleType(prop.Value)} {propName} {{ get; set; }}");
+                sb.AppendLine($"{indent}[{Serializer.Property}(\"{prop.Key}\")]");
+                sb.AppendLine($"{indent}{PropertyAccessModifier} {HandleType(prop.Value)} {HandlePropertyName(prop.Key)} {PropertySuffix}");
                 sb.AppendLine();
             }
             return sb.ToString().TrimEnd('\r', '\n');
@@ -67,25 +128,31 @@ namespace ClientBuilder
         public string GenerateClass()
         {
             var sb = new StringBuilder();
-            sb.AppendLine(_serializer.Usings);
-            sb.AppendLine($"namespace {_class.Namespace}");
+            var indent = Indent(1);
+            sb.AppendLine(Serializer.Usings);
+            sb.AppendLine($"namespace {Class.Namespace}");
             sb.AppendLine($"{{");
-            sb.AppendLine($"    public class {_class.Name}");
-            sb.AppendLine($"    {{");
+            sb.AppendLine($"{indent}{ClassAccessModifier} class {Class.Name}");
+            sb.AppendLine($"{indent}{{");
             sb.AppendLine(GenerateProperties(2));
-            sb.AppendLine($"    }}");
+            sb.AppendLine($"{indent}}}");
             sb.AppendLine($"}}");
-
-            // Add to cache to prevent duplicate generation
-            Cache.Instance.Add($"{_class.FullName}");
-
             return sb.ToString();
         }
 
         public void GenerateFile()
-        {
-            using var writer = new StreamWriter($"{_class.Name}.cs");
+        { 
+            if (Cache.Instance.Contains(Class.FullName))
+                return;
+
+            Directory.CreateDirectory("Models");
+            using var writer = new StreamWriter($"Models\\{Class.Name}.cs");
             writer.Write(GenerateClass());
+
+            // Add to cache to prevent duplicate generation
+            Cache.Instance.Add(Class.FullName);
         }
+
+        public override string ToString() => Class.FullName;
     }
 }

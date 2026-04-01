@@ -9,6 +9,10 @@ var schemas = openApi?.Components?.Schemas ?? new Dictionary<string, OpenApiComp
 
 foreach (var component in schemas)
 {
-    var c = new ClassGenerator(component.Key, schemas, serializer);
+    var c = new ClassGenerator(component.Key, schemas, serializer)
+    {
+        NullableProperties = true,
+    };
+
     c.GenerateFile();
 }
