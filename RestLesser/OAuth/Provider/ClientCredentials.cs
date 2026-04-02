@@ -71,13 +71,25 @@ namespace RestLesser.OAuth.Provider
         /// Get client credentials
         /// </summary>
         /// <returns></returns>
-        public TokenResponse GetClientCredentials()
+        public virtual TokenResponse GetClientCredentials(params string[] extraParameters)
         {
             IEnumerable<KeyValuePair<string, string>> parameters = BaseParameters
                 .Concat(new Dictionary<string, string>
                 {
                     { "grant_type", "client_credentials" }
                 });
+
+            // Add extra parameters if any
+            if (extraParameters != null && extraParameters.Length % 2 == 0)
+            {
+                for (int i = 0; i < extraParameters.Length; i += 2)
+                {
+                    parameters = parameters.Concat(new Dictionary<string, string>
+                    {
+                        { extraParameters[i], extraParameters[i + 1] }
+                    });
+                }
+            }
 
             return RestClient.Post<TokenResponse>(Uri.PathAndQuery, parameters);
         }
