@@ -1,19 +1,3 @@
-﻿using Restlesser.Builder;
-using Restlesser.Builder.Generators;
-using Restlesser.Builder.Models;
+﻿using Restlesser.Builder.Models;
 
-var openApi = OpenApi.Load("swagger.json");
-Console.WriteLine($"OpenAPI Version: {openApi?.Version}");
-
-var serializer = new Serializer(SerializerType.NewtonsoftJson);
-var schemas = openApi?.Components?.Schemas ?? new Dictionary<string, OpenApiComponentSchema>();
-
-foreach (var component in schemas)
-{
-    var c = new Generator(component.Key, schemas, serializer)
-    {
-        NullableProperties = true,
-    };
-
-    c.GenerateFile();
-}
+OpenApi.DumpModels("swagger.json", null);

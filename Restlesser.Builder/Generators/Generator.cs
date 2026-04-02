@@ -141,12 +141,7 @@ namespace Restlesser.Builder.Generators
                 return string.Empty;
 
             var indent = Indent(level);
-            var sb = new StringBuilder();
-            foreach (var value in Schema.Enum)
-            {
-                sb.AppendLine($"{indent}{GetEnumValueName(value)},");
-            }
-            return sb.ToString();
+            return string.Join(",\r\n", Schema.Enum.Select(v => $"{indent}{GetEnumValueName(v)}"));
         }
 
         public string GenerateEnum()

@@ -26,7 +26,8 @@ namespace Restlesser.Builder
                 ],
                 SerializerType.NewtonsoftJson =>
                 [
-                    "Newtonsoft.Json"
+                    "Newtonsoft.Json",
+
                 ],
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Restlesser.Builder.Generators;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -37,6 +38,26 @@ namespace Restlesser.Builder.Models
 
         public static OpenApi? Load(string filePath) => JsonSerializer.Deserialize<OpenApi>(File.ReadAllText(filePath, Encoding.UTF8), JsonOptions);
         
+        public static void DumpModels(string file, string outputFolder)
+        {
+            var openApi = Load(file);
+
+            Console.WriteLine($"OpenAPI Version: {openApi?.Version}");
+
+            var serializer = new Serializer(SerializerType.NewtonsoftJson);
+            var schemas = openApi?.Components?.Schemas ?? new Dictionary<string, OpenApiComponentSchema>();
+
+            foreach (var component in schemas)
+            {
+                var c = new Generator(component.Key, schemas, serializer)
+                {
+                    NullableProperties = true,
+                };
+
+                c.GenerateFile();
+            }
+        }
+
         [JsonPropertyName("openapi")]
         public string? Version { get; set; }
 
@@ -197,6 +218,6 @@ namespace Restlesser.Builder.Models
         public OpenApiObject? Items { get; set; }
 
         [JsonPropertyName("enum")]
-        public List<int>? Enum { get; set; }
+        public List<object>? Enum { get; set; }
     }
 }

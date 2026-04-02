@@ -17,7 +17,7 @@ namespace Restlesser.Builder.Generators
         protected static string GetPropertyName(string propertyName) =>
             char.ToUpper(propertyName[0]) + propertyName[1..];
 
-        protected static string GetEnumValueName(int value)
+        protected static string GetEnumValueName(object value)
         {
             var name = value.ToString() ?? throw new InvalidOperationException("Enum value cannot be null");
             // Ensure the name is a valid C# identifier
