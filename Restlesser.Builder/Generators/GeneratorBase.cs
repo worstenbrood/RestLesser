@@ -1,7 +1,6 @@
 ﻿using Restlesser.Builder.Models;
 using Restlesser.Builder.Parsers;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Restlesser.Builder.Generators
 {
