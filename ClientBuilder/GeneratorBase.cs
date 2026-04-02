@@ -1,7 +1,7 @@
-﻿using ClientBuilder.Models;
+﻿using Restlesser.Builder.Models;
 using System.Text;
 
-namespace ClientBuilder
+namespace Restlesser.Builder
 {
     internal abstract class GeneratorBase(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer)
     {

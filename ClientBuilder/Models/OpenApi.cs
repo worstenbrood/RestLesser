@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ClientBuilder.Models
+namespace Restlesser.Builder.Models
 {
     public enum OpenApiType
     {

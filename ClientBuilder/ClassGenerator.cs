@@ -1,8 +1,8 @@
-﻿using ClientBuilder.Models;
+﻿using Restlesser.Builder.Models;
 using System;
 using System.Text;
 
-namespace ClientBuilder
+namespace Restlesser.Builder
 {
     internal class ClassGenerator(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer) : GeneratorBase(fullName, schemas, serializer)
     {

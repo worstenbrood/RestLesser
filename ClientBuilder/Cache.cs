@@ -1,4 +1,4 @@
-﻿namespace ClientBuilder
+﻿namespace Restlesser.Builder
 {
     internal class Cache() : HashSet<string>
     {

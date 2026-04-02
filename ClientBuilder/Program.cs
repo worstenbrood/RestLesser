@@ -1,5 +1,5 @@
-﻿using ClientBuilder;
-using ClientBuilder.Models;
+﻿using Restlesser.Builder;
+using Restlesser.Builder.Models;
 
 var openApi = OpenApi.Load("swagger.json");
 Console.WriteLine($"OpenAPI Version: {openApi?.Version}");

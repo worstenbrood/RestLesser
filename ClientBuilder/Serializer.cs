@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ClientBuilder
+namespace Restlesser.Builder
 {
     public enum SerializerType
     {
