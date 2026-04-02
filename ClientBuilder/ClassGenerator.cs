@@ -88,7 +88,7 @@ namespace ClientBuilder
             return result;
         }
 
-        private string GetReferenceName(string reference) => reference.Split('/').Last();  
+        private static string GetReferenceName(string reference) => reference.Split('/').Last();  
         
         private string HandleClassReference(string reference)
         {
