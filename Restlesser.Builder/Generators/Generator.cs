@@ -1,10 +1,10 @@
 ﻿using Restlesser.Builder.Models;
-using System;
+using Restlesser.Builder.Parsers;
 using System.Text;
 
-namespace Restlesser.Builder
+namespace Restlesser.Builder.Generators
 {
-    internal class ClassGenerator(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer) : GeneratorBase(fullName, schemas, serializer)
+    internal class Generator(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer) : GeneratorBase(fullName, schemas, serializer)
     {
         /// <summary>
         /// Class access modifier, default is public
@@ -46,22 +46,12 @@ namespace Restlesser.Builder
             }
             else if (schema?.Reference != null)
             {
-                return $"{HandleClassReference(schema.Reference)}";
+                return $"{HandleReference(schema.Reference)}";
             }
             return HandleType(schema, nullable);
         }
 
         private string HandleArray(OpenApiObject? schema) => string.Format(ArrayTypeFormat, HandleObject(schema, false));
-
-        private string HandleEnum(OpenApiObject? schema)
-        {
-            if (schema?.Reference != null)
-            {
-                return $"{HandleEnumReference(schema.Reference)}";
-            }
-
-            return "Enum";
-        }
 
         private string HandleType(OpenApiObject? apiObject, bool nullable = true)
         {
@@ -75,7 +65,7 @@ namespace Restlesser.Builder
                 OpenApiType.Boolean => "bool",
                 OpenApiType.Array => HandleArray(apiObject.Items),
                 OpenApiType.Object => HandleObject(apiObject, nullable),
-                OpenApiType.Enum => HandleEnum(apiObject.Items),
+                OpenApiType.Enum => HandleObject(apiObject.Items),
                 null => "object",
                 _ => throw new NotSupportedException()
             };
@@ -88,15 +78,13 @@ namespace Restlesser.Builder
             return result;
         }
 
-        private static string GetReferenceName(string reference) => reference.Split('/').Last();  
-        
-        private string HandleClassReference(string reference)
+        private string HandleReference(string reference)
         {
             var refName = GetReferenceName(reference);
             if (Cache.Instance.Contains(refName))
-                return ClassParser.GetName(refName);
+                return NameParser.GetName(refName);
 
-            var generator = new ClassGenerator(refName, Schemas, Serializer) 
+            var generator = new Generator(refName, Schemas, Serializer) 
             { 
                 NullableProperties = NullableProperties, 
                 DefaultPropertyType = DefaultPropertyType, 
@@ -104,26 +92,9 @@ namespace Restlesser.Builder
             };
             generator.GenerateFile();
 
-            return ClassParser.GetName(refName);
+            return NameParser.GetName(refName);
         }
-
-        private string HandleEnumReference(string reference)
-        {
-            var refName = GetReferenceName(reference);
-            if (Cache.Instance.Contains(refName))
-                return ClassParser.GetName(refName);
-
-            var generator = new EnumGenerator(refName, Schemas, Serializer);
-            generator.GenerateFile();
-
-            return ClassParser.GetName(refName);
-        }
-
-        private static string HandlePropertyName(string propertyName) =>
-            char.ToUpper(propertyName[0]) + propertyName[1..];
-        
-        private static string Indent(int level) => new (' ', level * 4);
-
+                       
         public string GenerateProperties(int level = 0)
         {
             if (Schema.Properties == null)
@@ -134,13 +105,13 @@ namespace Restlesser.Builder
             foreach (var prop in Schema.Properties)
             {
                 sb.AppendLine($"{indent}[{Serializer.Property}(\"{prop.Key}\")]");
-                sb.AppendLine($"{indent}{PropertyAccessModifier} {HandleType(prop.Value)} {HandlePropertyName(prop.Key)} {PropertySuffix}");
+                sb.AppendLine($"{indent}{PropertyAccessModifier} {HandleType(prop.Value)} {GetPropertyName(prop.Key)} {PropertySuffix}");
                 sb.AppendLine();
             }
             return sb.ToString().TrimEnd('\r', '\n');
         }
 
-        public override string Generate()
+        public string GenerateClass()
         {
             var sb = new StringBuilder();
             var indent = Indent(1);
@@ -153,6 +124,57 @@ namespace Restlesser.Builder
             sb.AppendLine($"{indent}}}");
             sb.AppendLine($"}}");
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Generates enum values for the enum defined in the OpenAPI schema. 
+        /// It ensures that the enum values are valid C# identifiers by replacing 
+        /// invalid characters with underscores and prefixing with an underscore if 
+        /// the name starts with a non-letter character. The generated enum values are 
+        /// returned as a string that can be used in the enum definition.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public string GenerateEnumValues(int level = 0)
+        {
+            if (Schema.Enum == null) 
+                return string.Empty;
+
+            var indent = Indent(level);
+            var sb = new StringBuilder();
+            foreach (var value in Schema.Enum)
+            {
+                sb.AppendLine($"{indent}{GetEnumValueName(value)},");
+            }
+            return sb.ToString();
+        }
+
+        public string GenerateEnum()
+        {
+            var sb = new StringBuilder();
+            var indent = Indent(1);
+            sb.AppendLine(Serializer.Usings);
+            sb.AppendLine($"namespace {Class.Namespace}");
+            sb.AppendLine("{");
+            sb.AppendLine($"{indent}public enum {Class.Name}");
+            sb.AppendLine($"{indent}{{");
+            if (Schema.Enum != null)
+            {
+               sb.AppendLine(GenerateEnumValues(2));
+            }
+            sb.AppendLine($"{indent}}}");
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+
+        public override string Generate()
+        {
+            if(Schema.Enum != null)
+            {
+                return GenerateEnum();
+            }
+
+            return GenerateClass();
         }
 
         public override string ToString() => Class.FullName;

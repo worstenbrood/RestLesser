@@ -1,6 +1,6 @@
-﻿namespace Restlesser.Builder
+﻿namespace Restlesser.Builder.Parsers
 {
-    internal class ClassParser
+    internal class NameParser
     {
         public readonly string Name;
         public readonly string FullName;
@@ -32,7 +32,7 @@
             }
         }
 
-        public ClassParser(string fullName)
+        public NameParser(string fullName)
         {
             FullName = fullName;
 
