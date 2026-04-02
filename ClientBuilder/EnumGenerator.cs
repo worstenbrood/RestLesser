@@ -1,20 +1,12 @@
 ﻿using ClientBuilder.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ClientBuilder
 {
-    internal class EnumGenerator : GeneratorBase
+    internal class EnumGenerator(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer) : 
+        GeneratorBase(fullName, schemas, serializer)
     {
-        public EnumGenerator(string fullName, Dictionary<string, OpenApiComponentSchema> schemas, Serializer serializer) : base(fullName, schemas, serializer)
-        {
-
-        }
-
-        public void GenerateFile()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             sb.AppendLine(Serializer.Usings);
@@ -38,8 +30,7 @@ namespace ClientBuilder
             }
             sb.AppendLine("    }");
             sb.AppendLine("}");
-            var filePath = $"{Class.Name}.cs";
-            File.WriteAllText(filePath, sb.ToString());
-        }   
+            return sb.ToString();
+        }
     }
 }

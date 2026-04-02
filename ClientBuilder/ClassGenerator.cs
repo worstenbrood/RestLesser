@@ -1,4 +1,5 @@
 ﻿using ClientBuilder.Models;
+using System;
 using System.Text;
 
 namespace ClientBuilder
@@ -45,7 +46,7 @@ namespace ClientBuilder
             }
             else if (schema?.Reference != null)
             {
-                return $"{HandleReference(schema.Reference)}";
+                return $"{HandleClassReference(schema.Reference)}";
             }
             return HandleType(schema, nullable);
         }
@@ -56,10 +57,10 @@ namespace ClientBuilder
         {
             if (schema?.Reference != null)
             {
-                return HandleReference(schema.Reference);
+                return $"{HandleEnumReference(schema.Reference)}";
             }
-           
-            return "int";
+
+            return "Enum";
         }
 
         private string HandleType(OpenApiObject? apiObject, bool nullable = true)
@@ -72,9 +73,9 @@ namespace ClientBuilder
                 OpenApiType.String => "string",
                 OpenApiType.Integer => "int",
                 OpenApiType.Boolean => "bool",
-                OpenApiType.Array => HandleArray(apiObject?.Items),
+                OpenApiType.Array => HandleArray(apiObject.Items),
                 OpenApiType.Object => HandleObject(apiObject, nullable),
-                OpenApiType.Enum => HandleEnum(apiObject),
+                OpenApiType.Enum => HandleEnum(apiObject.Items),
                 null => "object",
                 _ => throw new NotSupportedException()
             };
@@ -87,9 +88,11 @@ namespace ClientBuilder
             return result;
         }
 
-        private string HandleReference(string reference)
+        private string GetReferenceName(string reference) => reference.Split('/').Last();  
+        
+        private string HandleClassReference(string reference)
         {
-            var refName = reference.Split('/').Last();
+            var refName = GetReferenceName(reference);
             if (Cache.Instance.Contains(refName))
                 return ClassParser.GetName(refName);
 
@@ -99,6 +102,18 @@ namespace ClientBuilder
                 DefaultPropertyType = DefaultPropertyType, 
                 ArrayTypeFormat = ArrayTypeFormat 
             };
+            generator.GenerateFile();
+
+            return ClassParser.GetName(refName);
+        }
+
+        private string HandleEnumReference(string reference)
+        {
+            var refName = GetReferenceName(reference);
+            if (Cache.Instance.Contains(refName))
+                return ClassParser.GetName(refName);
+
+            var generator = new EnumGenerator(refName, Schemas, Serializer);
             generator.GenerateFile();
 
             return ClassParser.GetName(refName);
@@ -125,7 +140,7 @@ namespace ClientBuilder
             return sb.ToString().TrimEnd('\r', '\n');
         }
 
-        public string GenerateClass()
+        public override string Generate()
         {
             var sb = new StringBuilder();
             var indent = Indent(1);
@@ -138,19 +153,6 @@ namespace ClientBuilder
             sb.AppendLine($"{indent}}}");
             sb.AppendLine($"}}");
             return sb.ToString();
-        }
-
-        public void GenerateFile()
-        { 
-            if (Cache.Instance.Contains(Class.FullName))
-                return;
-
-            Directory.CreateDirectory("Models");
-            using var writer = new StreamWriter($"Models\\{Class.Name}.cs");
-            writer.Write(GenerateClass());
-
-            // Add to cache to prevent duplicate generation
-            Cache.Instance.Add(Class.FullName);
         }
 
         public override string ToString() => Class.FullName;

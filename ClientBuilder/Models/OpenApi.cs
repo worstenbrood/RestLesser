@@ -58,9 +58,6 @@ namespace ClientBuilder.Models
 
     public class OpenApiComponentSchema : OpenApiObject
     {
-        [JsonPropertyName("enum")]
-        public List<int>? Enum { get; set; }
-
         [JsonPropertyName("required")]
         public List<string>? Required { get; set; }
 
@@ -198,5 +195,8 @@ namespace ClientBuilder.Models
 
         [JsonPropertyName("items")]
         public OpenApiObject? Items { get; set; }
+
+        [JsonPropertyName("enum")]
+        public List<int>? Enum { get; set; }
     }
 }
