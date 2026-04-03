@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestLesser.Examples", "Rest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestLesser.Example", "RestLesser.Example\RestLesser.Example.csproj", "{E35A44BC-E337-4AD2-A3F0-C266E728963E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restlesser.Builder", "RestLesser.Builder\Restlesser.Builder.csproj", "{68165B07-430F-4666-9E84-DF5C601C0ECA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restlesser.Builder", "Restlesser.Builder\Restlesser.Builder.csproj", "{68165B07-430F-4666-9E84-DF5C601C0ECA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
