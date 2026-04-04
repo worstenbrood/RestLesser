@@ -54,7 +54,7 @@ namespace Restlesser.Builder.Models
                     NullableProperties = true,
                 };
 
-                c.GenerateFile(false);
+                c.GenerateFile();
             }
         }
 

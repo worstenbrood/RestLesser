@@ -37,6 +37,7 @@ namespace Restlesser.Builder.Generators
         /// For example, if the array items are of type string, the resulting type will be List<string>.
         /// </summary>
         public string ArrayTypeFormat { get; set; } = "List<{0}>";
+               
 
         private string HandleObject(OpenApiObject? schema, bool nullable = true)
         {
@@ -78,18 +79,34 @@ namespace Restlesser.Builder.Generators
             return result;
         }
 
+        /// <summary>
+        /// Generate a reference generator for the given reference. 
+        /// This is used to generate a separate class for the referenced schema, 
+        /// and return the name of the generated class to be used as the type of the property that references it.
+        /// </summary>
+        /// <param name="reference"></param>
+        /// <returns></returns>
+        public Generator CreateReferenceGenerator(string reference) => new (reference, Schemas, Serializer) 
+        {
+            // Copy properties from the current generator to ensure consistency in generated code
+            NullableProperties = NullableProperties, 
+            DefaultPropertyType = DefaultPropertyType, 
+            ArrayTypeFormat = ArrayTypeFormat,
+            ClassAccessModifier = ClassAccessModifier,
+            PropertyAccessModifier = PropertyAccessModifier,
+            PropertySuffix = PropertySuffix,
+            Folder = Folder,
+            FlatStructure = FlatStructure
+        };
+
         private string HandleReference(string reference)
         {
             var refName = GetReferenceName(reference);
             if (Cache.Instance.Contains(refName))
                 return NameParser.GetName(refName);
 
-            var generator = new Generator(refName, Schemas, Serializer) 
-            { 
-                NullableProperties = NullableProperties, 
-                DefaultPropertyType = DefaultPropertyType, 
-                ArrayTypeFormat = ArrayTypeFormat 
-            };
+            // Generate reference
+            var generator = CreateReferenceGenerator(refName);
             generator.GenerateFile();
 
             return NameParser.GetName(refName);
