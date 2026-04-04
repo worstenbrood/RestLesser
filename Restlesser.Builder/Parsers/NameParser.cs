@@ -11,6 +11,8 @@
 
         public static string GetName(string fullName) => fullName.Split('.').Last();
 
+        public string GetPath() => Path.Combine(Parts.Take(Parts.Length - 1).ToArray());
+
         public NameParser(string fullName)
         {
             Parts = fullName.Split('.');

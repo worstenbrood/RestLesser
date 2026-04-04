@@ -31,15 +31,24 @@ namespace Restlesser.Builder.Generators
 
         public abstract string Generate();
 
-        public void GenerateFile()
+        private string GetPath(bool flat) => flat ? Folder : Class.GetPath();
+
+        /// <summary>
+        /// Generate class and references
+        /// </summary>
+        /// <param name="flat"></param>
+        public void GenerateFile(bool flat = true)
         {
             if (Cache.Instance.Contains(Class.FullName))
                 return;
 
-            Directory.CreateDirectory(Folder);
+            var path = GetPath(flat);
+
+            // Create directory
+            Directory.CreateDirectory(path);
 
             // Save file with UTF-8 encoding to support all characters
-            File.WriteAllText($"{Folder}\\{Class.Name}.cs", Generate(), Encoding.UTF8);
+            File.WriteAllText($"{path}\\{Class.Name}.cs", Generate(), Encoding.UTF8);
 
             // Add to cache to prevent duplicate generation
             Cache.Instance.Add(Class.FullName);
