@@ -151,7 +151,7 @@ namespace RestLesser.OAuth.Provider
         /// </summary>
         /// <param name="authorizationCode">Authorization code</param>
         /// <returns></returns>
-        public TokenResponse GetAccessToken(string authorizationCode)
+        public virtual TokenResponse GetAccessToken(string authorizationCode)
         {
             IEnumerable<KeyValuePair<string, string>> parameters = BaseParameters
                 .Concat(new Dictionary<string, string>
