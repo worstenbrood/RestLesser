@@ -38,6 +38,21 @@ namespace RestLesser
         }
 
         /// <summary>
+        /// Add a query parameter
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public TUrl Add(string key, string value)
+        {
+            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+            {
+                QueryBuilder?.SetQueryParameter(key, value);
+            }
+                        
+            return this as TUrl;
+        }
+
+        /// <summary>
         /// Set multiple query parameters
         /// </summary>
         public TUrl SetQueryParameters(IEnumerable<KeyValuePair<string, string>> keyValuePairs)
