@@ -6,12 +6,11 @@
         public readonly string Name;
         public readonly string FullName;
         public readonly string Namespace;
+        public readonly string Path;
         
         public static string GetNamespace(string fullName) => string.Join('.', fullName.Split('.').Reverse().Skip(1).Reverse());
 
         public static string GetName(string fullName) => fullName.Split('.').Last();
-
-        public string GetPath() => Path.Combine(Parts.Take(Parts.Length - 1).ToArray());
 
         public NameParser(string fullName)
         {
@@ -19,6 +18,7 @@
             FullName = fullName;
             Name = Parts.Last();
             Namespace = string.Join('.', Parts[..^1]);
+            Path = System.IO.Path.Combine([.. Parts.Take(Parts.Length - 1)]);
         }
     }
 }
