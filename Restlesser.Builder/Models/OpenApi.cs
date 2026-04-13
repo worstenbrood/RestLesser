@@ -44,7 +44,7 @@ namespace Restlesser.Builder.Models
 
             Console.WriteLine($"OpenAPI Version: {openApi?.Version}");
 
-            var serializer = new Serializer(SerializerType.NewtonsoftJson);
+            var serializer = new Serializer(SerializerType.NewTonSoftJson);
             var schemas = openApi?.Components?.Schemas ?? new Dictionary<string, OpenApiComponentSchema>();
 
             foreach (var component in schemas)

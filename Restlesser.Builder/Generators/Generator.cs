@@ -121,7 +121,7 @@ namespace Restlesser.Builder.Generators
             var sb = new StringBuilder();
             foreach (var prop in Schema.Properties)
             {
-                sb.AppendLine($"{indent}[{Serializer.Property}(\"{prop.Key}\")]");
+                sb.AppendLine($"{indent}[{Serializer.GetPropertyAttribute(prop.Key)}]");
                 sb.AppendLine($"{indent}{PropertyAccessModifier} {HandleType(prop.Value)} {GetPropertyName(prop.Key)} {PropertySuffix}");
                 sb.AppendLine();
             }

@@ -30,15 +30,27 @@ namespace Restlesser.Builder.Generators
         protected static string GetPropertyName(string propertyName) =>
             char.ToUpper(propertyName[0]) + propertyName[1..];
 
-        protected static string GetEnumValueName(object value)
+        protected string GetEnumValueName(object value)
         {
-            var name = value.ToString() ?? throw new InvalidOperationException("Enum value cannot be null");
+            var valueName = value.ToString() ?? throw new InvalidOperationException("Enum value cannot be null");
+            var name = string.Empty;
+
             // Ensure the name is a valid C# identifier
-            if (!char.IsLetter(name[0]) && name[0] != '_')
+            if (!char.IsLetter(valueName[0]) && valueName[0] != '_')
             {
-                name = "_" + name;
+                name = "_" + valueName;
+
             }
+
+            // Replace invalid characters with underscores
             name = string.Concat(name.Select(c => char.IsLetterOrDigit(c) ? c : '_'));
+
+            // If the original value name is not a valid C# identifier, add the EnumMember attribute with the original value
+            if (name != valueName)
+            {
+                name = $"[{Serializer.GetEnumAttribute(valueName)}] {name}";
+            }
+
             return name;
         }
 
