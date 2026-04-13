@@ -10,9 +10,9 @@
         public readonly string Namespace;
         public readonly string Path;
         
-        public static string GetNamespace(string fullName) => string.Join(Separator, fullName.Split(Separator).Reverse().Skip(1).Reverse());
+        public static string GetNamespace(string fullName) => new NameParser(fullName).Namespace;
 
-        public static string GetName(string fullName) => fullName.Split(Separator).Last();
+        public static string GetName(string fullName) => new NameParser(fullName).Name;
 
         public NameParser(string fullName)
         {
